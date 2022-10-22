@@ -1,0 +1,27 @@
+.header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px;
+	max-height: 50px;
+	margin: 5px 0;
+	color: coral;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	font-weight: 500;
+
+	& > * {
+		max-height: 40px;
+	}
+}
+
+.userInfo {
+	display: flex;
+	flex-direction: row;
+	justify-content: end;
+	align-items: center;
+
+	& > * {
+		margin-left: 15px;
+	}
+}
