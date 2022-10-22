@@ -1,0 +1,38 @@
+{
+	"root": true, // stop searching config
+	"env": { // choose environment and it's global vars
+			"browser": true,
+			"es2021": true
+	},
+	"extends": [ // extend plugins rules
+			"react-app", 
+			"prettier", 
+			"plugin:react/recommended",    
+			"standard-with-typescript"
+	],
+	"parserOptions": { //specify the JavaScript language options
+			"ecmaFeatures": {
+					"jsx": true
+			},
+			"ecmaVersion": 12,
+			"sourceType": "module"
+	},
+	"plugins": [ // use third-party
+			"react",
+			"prettier"
+	],
+	"rules": { //rules
+			"prettier/prettier": [ //rules for extending prettier
+					"error", {
+							"printWidth": 80,
+							"trailingComma": "es5",
+							"semi": true,
+							"jsxSingleQuote": true,
+							"singleQuote": true,
+							"useTabs": true,
+							"endOfLine": "auto",
+							"max-len": ["error", { "code": 80 }]
+					}
+			]
+	}
+}
