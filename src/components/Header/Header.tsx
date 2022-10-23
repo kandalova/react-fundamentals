@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { Button } from '../../common/Button/Button';
 import { Logo } from './components/Logo';
+
 import classes from './header.module.scss';
 
 export function Header() {
-	function onButtonClick() {
+	function onButtonClick(event: React.MouseEvent<HTMLElement>): void {
 		console.log('Hello from header');
 	}
 	return (

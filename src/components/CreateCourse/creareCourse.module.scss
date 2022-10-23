@@ -1,0 +1,34 @@
+.createCourse{
+	padding: 0 10px;
+	&>*{
+		margin: 20px 0;
+	}
+
+	h1{
+		text-align: center;
+	}
+
+	.boxes{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: start;
+		flex-wrap: wrap;
+		background-color: azure;
+	}
+
+	.box{
+		width: 48%;
+		margin-bottom: 20px;
+		padding: 10px;
+
+		&>*{
+			width: 100%;
+		}
+
+		.center{
+			margin: 20px auto;
+			width: fit-content;
+		}
+	}
+}
