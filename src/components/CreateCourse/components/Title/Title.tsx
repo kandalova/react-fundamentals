@@ -10,7 +10,7 @@ import {
 import classes from './title.module.scss';
 
 interface ITitle {
-	value?: string;
+	value: string;
 	onClick: (event: React.MouseEvent<HTMLElement>) => void;
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

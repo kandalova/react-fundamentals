@@ -17,3 +17,13 @@ export const COURSE_AUTHORS_LIST_BUTTON = 'Delete author';
 
 export const NEW_AUTHOR_ALERT = 'Please fill in author name';
 export const NEW_COURSE_ALERT = 'Please fill in all fields';
+
+export const COURSE_CARD_BUTTON = 'Show course';
+export const COURSE_CARD_PROP_AUTHORS = 'Authors';
+export const COURSE_CARD_PROP_DURATION = 'Duration';
+export const COURSE_CARD_PROP_CREATED = 'Created';
+
+export const SEARCH_BUTTON = 'Search';
+export const SEARCH_PLACEHOLDER = 'Enter';
+
+export const ADD_COURSE_BUTTON_TEXT = 'Add new course';

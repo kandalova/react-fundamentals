@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+
 import { Header } from './components/Header/Header';
-import classes from './app.module.scss';
 import {
 	mockedCoursesList,
 	mockedAuthorsList,
@@ -10,6 +10,8 @@ import { CreateCourse } from './components/CreateCourse/CreateCourse';
 /* eslint-disable */
 // @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
+
+import classes from './app.module.scss';
 
 function App() {
 	const [authors, setAuthors] = useState(mockedAuthorsList);

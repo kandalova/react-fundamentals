@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { Button } from '../../common/Button/Button';
+import { ADD_COURSE_BUTTON_TEXT } from '../../constants/constants';
 import { checkStringIncludes } from '../../helpers/checkStringIncludes';
 import { CourseCard } from './components/CourseCard/CourseCard';
 import { SearchBar } from './components/SearchBar/SearchBar';
@@ -12,11 +13,6 @@ interface ICourses {
 	authors: Array<any>;
 	toggleCreteMode: (event: React.MouseEvent<HTMLElement>) => void;
 }
-
-const ADD_COURSE_BUTTON_TEXT = 'Add new course';
-const SEARCH_BUTTON_TEXT = 'Search';
-const SEARCH_LABEL_TEXT = 'Search';
-const SEARCH_PLACEHOLDER = 'Enter';
 
 export function Courses({ courses, authors, toggleCreteMode }: ICourses) {
 	const [searchValue, setSearchValue] = useState('');
@@ -49,7 +45,7 @@ export function Courses({ courses, authors, toggleCreteMode }: ICourses) {
 		<div className={classes.courses}>
 			<div className={classes.header}>
 				<SearchBar onSearch={onSearch} />
-				<Button text='Add new course' onClick={toggleCreteMode} />
+				<Button text={ADD_COURSE_BUTTON_TEXT} onClick={toggleCreteMode} />
 			</div>
 			<div className={classes.courseList}>
 				{/* {courses.map((item) => (

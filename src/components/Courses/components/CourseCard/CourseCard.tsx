@@ -1,6 +1,12 @@
 import React from 'react';
 
 import { Button } from '../../../../common/Button/Button';
+import {
+	COURSE_CARD_PROP_AUTHORS,
+	COURSE_CARD_PROP_DURATION,
+	COURSE_CARD_PROP_CREATED,
+	COURSE_CARD_BUTTON,
+} from '../../../../constants/constants';
 import { formatDate } from '../../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../../helpers/getCourseDuration';
 import { CourseProp } from '../CourseProp/CourseProp';
@@ -38,13 +44,19 @@ export function CourseCard({ course, authors }: ICourseCard) {
 				<p>{course.description}</p>
 			</div>
 			<div className={classes.rightInfo}>
-				<CourseProp prop='Authors' value={getAuthors(course.authors)} />
-				<CourseProp prop='Duration' value={formatDuration(course.duration)} />
 				<CourseProp
-					prop='Created'
+					prop={COURSE_CARD_PROP_AUTHORS}
+					value={getAuthors(course.authors)}
+				/>
+				<CourseProp
+					prop={COURSE_CARD_PROP_DURATION}
+					value={formatDuration(course.duration)}
+				/>
+				<CourseProp
+					prop={COURSE_CARD_PROP_CREATED}
 					value={formatDate(course.creationDate, '.')}
 				/>
-				<Button text='Show course' />
+				<Button text={COURSE_CARD_BUTTON} />
 			</div>
 		</div>
 	);

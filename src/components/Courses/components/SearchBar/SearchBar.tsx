@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 
 import { Button } from '../../../../common/Button/Button';
 import { Input } from '../../../../common/Input/Input';
+import {
+	SEARCH_BUTTON,
+	SEARCH_PLACEHOLDER,
+} from '../../../../constants/constants';
 
 import classes from './searchBar.module.scss';
 
@@ -28,8 +32,12 @@ export function SearchBar({ onSearch }: ISearchBar) {
 				value={value}
 				onChange={onChange}
 				onKeyDown={onKeyDown}
+				placeholderText={SEARCH_PLACEHOLDER}
 			/>
-			<Button text='Search' onClick={() => onSearch && onSearch(value)} />
+			<Button
+				text={SEARCH_BUTTON}
+				onClick={() => onSearch && onSearch(value)}
+			/>
 		</div>
 	);
 }

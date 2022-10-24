@@ -8,10 +8,8 @@ interface IButton {
 
 export function Button({ text, onClick }: IButton) {
 	return (
-		<>
-			<button className={classes.button} onClick={onClick}>
-				{text}
-			</button>
-		</>
+		<button className={classes.button} onClick={onClick}>
+			{text}
+		</button>
 	);
 }
