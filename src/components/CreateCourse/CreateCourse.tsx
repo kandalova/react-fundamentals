@@ -60,7 +60,7 @@ export function CreateCourse({
 	const [description, setDesc] = useState<string>('');
 	const [courseAuthors, setCourseAuthors] =
 		useState<string[]>(initialCourseAuthors);
-	const [duration, setDuration] = useState<number | undefined>();
+	const [duration, setDuration] = useState<number>();
 
 	function deleteAuthorFromCourse(id: string): void {
 		const newCourseAuthors = courseAuthors.filter((item) => item !== id);
