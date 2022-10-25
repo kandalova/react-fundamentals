@@ -11,7 +11,7 @@ interface ISearchBar {
 }
 
 export function SearchBar({ onSearch }: ISearchBar) {
-	const [value, setValue] = useState('');
+	const [value, setValue] = useState<string>('');
 
 	function onKeyDown(event: React.KeyboardEvent): void {
 		if (event.key === 'Enter' && onSearch) {

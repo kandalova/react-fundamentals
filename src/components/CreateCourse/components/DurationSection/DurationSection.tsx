@@ -6,7 +6,7 @@ import { formatDuration } from '../../../../helpers/getCourseDuration';
 
 interface IDurationSection {
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	value: number;
+	value: number | undefined;
 }
 
 export function DurationSection({ onChange, value }: IDurationSection) {

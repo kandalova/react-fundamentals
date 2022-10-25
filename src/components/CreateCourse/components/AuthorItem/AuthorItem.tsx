@@ -1,14 +1,12 @@
 import React from 'react';
 
 import { Button } from '../../../../common/Button/Button';
+import { IAuthor } from '../../../../helpers/appTypes';
 
 import classes from './authorItem.module.scss';
 
 interface IAuthorItem {
-	author: {
-		id: string;
-		name: string;
-	};
+	author: IAuthor;
 	onClick?: (id: string) => void;
 	buttonText: string;
 }

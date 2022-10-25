@@ -2,26 +2,17 @@ import React from 'react';
 
 import { Button } from '../../../../common/Button/Button';
 import { COURSE_CARD } from '../../../../constants/constants';
+import { IAuthor, ICourse } from '../../../../helpers/appTypes';
 import { formatDate } from '../../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../../helpers/getCourseDuration';
-import { getValuesByIDsString } from '../../../../helpers/getValuesByIDsString';
+import { getAuthorsString } from '../../../../helpers/getValuesByIDsString';
 import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
 
 interface ICourseCard {
-	course: {
-		id: string;
-		title: string;
-		description: string;
-		creationDate: string;
-		duration: number;
-		authors: Array<string>;
-	};
-	authors: Array<{
-		id: string;
-		name: string;
-	}>;
+	course: ICourse;
+	authors: Array<IAuthor>;
 }
 
 export function CourseCard({ course, authors }: ICourseCard) {
@@ -34,7 +25,7 @@ export function CourseCard({ course, authors }: ICourseCard) {
 			<div className={classes.rightInfo}>
 				<CourseProp
 					prop={COURSE_CARD.AUTHORS}
-					value={getValuesByIDsString(course.authors, 'name', authors)}
+					value={getAuthorsString(course.authors, authors)}
 				/>
 				<CourseProp
 					prop={COURSE_CARD.DURATION}

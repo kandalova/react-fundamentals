@@ -1,6 +1,6 @@
 export function checkStringIncludes(
-	value: string,
+	value: string | null,
 	searchValue: string
 ): boolean {
-	return value.toLowerCase().includes(searchValue.toLowerCase());
+	return !!value && value.toLowerCase().includes(searchValue.toLowerCase());
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Header } from './components/Header/Header';
 import {
@@ -7,14 +8,14 @@ import {
 } from './constants/MockedCourses';
 import { Courses } from './components/Courses/Courses';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
+import { IAuthor, ICourse } from './helpers/appTypes';
 
-import { v4 as uuidv4 } from 'uuid';
 import classes from './app.module.scss';
 
 function App() {
-	const [authors, setAuthors] = useState(mockedAuthorsList);
-	const [courses, setCourses] = useState(mockedCoursesList);
-	const [isCreateMode, setCreateMode] = useState(false);
+	const [authors, setAuthors] = useState<IAuthor[]>(mockedAuthorsList);
+	const [courses, setCourses] = useState<ICourse[]>(mockedCoursesList);
+	const [isCreateMode, setCreateMode] = useState<boolean>(false);
 
 	function toggleCreateMode(): void {
 		setCreateMode(!isCreateMode);
@@ -23,7 +24,7 @@ function App() {
 	function createAuthor(value: string): void {
 		setAuthors([...authors, { name: value, id: uuidv4() }]);
 	}
-	function createCourse(course: any): void {
+	function createCourse(course: ICourse): void {
 		course.id = uuidv4();
 		setCourses([...courses, course]);
 		setCreateMode(false);

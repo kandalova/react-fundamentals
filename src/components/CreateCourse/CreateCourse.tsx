@@ -10,13 +10,14 @@ import {
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
 import { DurationSection } from './components/DurationSection/DurationSection';
 import { AuthorListSection } from './components/AuthorsListSection/AuthorsListSection';
+import { IAuthor, ICourse } from '../../helpers/appTypes';
 
 import classes from './creareCourse.module.scss';
 
 interface ICreateCourse {
-	authors: Array<any>;
+	authors: Array<IAuthor>;
 	createAuthor: (value: string) => void;
-	createCourse: (course: any) => void;
+	createCourse: (course: ICourse) => void;
 }
 
 const initialCourseAuthors: Array<string> = [];
@@ -24,7 +25,7 @@ const initialCourseAuthors: Array<string> = [];
 function prepareCourse(
 	title: string,
 	description: string,
-	duration: number,
+	duration: number | undefined,
 	courseAuthors: Array<string>
 ): any {
 	const date = new Date().toLocaleString();
@@ -55,10 +56,11 @@ export function CreateCourse({
 	createAuthor,
 	createCourse,
 }: ICreateCourse) {
-	const [title, setTitle] = useState('');
-	const [description, setDesc] = useState('');
-	const [courseAuthors, setCourseAuthors] = useState(initialCourseAuthors);
-	const [duration, setDuration] = useState(NaN);
+	const [title, setTitle] = useState<string>('');
+	const [description, setDesc] = useState<string>('');
+	const [courseAuthors, setCourseAuthors] =
+		useState<string[]>(initialCourseAuthors);
+	const [duration, setDuration] = useState<number | undefined>();
 
 	function deleteAuthorFromCourse(id: string): void {
 		const newCourseAuthors = courseAuthors.filter((item) => item !== id);

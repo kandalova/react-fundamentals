@@ -11,7 +11,7 @@ interface IAddAuthorSection {
 }
 
 export function AddAuthorSection({ onCreate }: IAddAuthorSection) {
-	const [value, setValue] = useState('');
+	const [value, setValue] = useState<string>('');
 
 	function onClick(): void {
 		if (value && value.length > 2) {

@@ -1,10 +1,11 @@
 import React from 'react';
 
+import { IAuthor } from '../../../../helpers/appTypes';
 import { AuthorItem } from '../AuthorItem/AuthorItem';
 
 interface IAuthorListSection {
 	title: string;
-	authors: Array<any>;
+	authors: Array<IAuthor>;
 	onClick?: (id: string) => void;
 	buttonText: string;
 }
