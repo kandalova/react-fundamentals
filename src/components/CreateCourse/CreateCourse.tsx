@@ -27,8 +27,7 @@ function prepareCourse(
 	description: string,
 	duration: number | undefined,
 	courseAuthors: Array<string>
-): any {
-	const date = new Date().toLocaleString();
+): ICourse | null {
 	if (
 		title &&
 		description &&
@@ -39,6 +38,7 @@ function prepareCourse(
 	) {
 		const creationDate = new Date().toLocaleString();
 		return {
+			id: null,
 			title,
 			description,
 			duration,
