@@ -7,10 +7,8 @@ import {
 } from './constants/MockedCourses';
 import { Courses } from './components/Courses/Courses';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
-/* eslint-disable */
-// @ts-ignore
-import { v4 as uuidv4 } from 'uuid';
 
+import { v4 as uuidv4 } from 'uuid';
 import classes from './app.module.scss';
 
 function App() {
@@ -22,8 +20,8 @@ function App() {
 		setCreateMode(!isCreateMode);
 	}
 
-	function createAuthor(value: string): void {;
-		setAuthors([...authors, {name: value, id: uuidv4()}]);
+	function createAuthor(value: string): void {
+		setAuthors([...authors, { name: value, id: uuidv4() }]);
 	}
 	function createCourse(course: any): void {
 		course.id = uuidv4();
