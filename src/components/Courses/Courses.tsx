@@ -11,15 +11,11 @@ import classes from './courses.module.scss';
 interface ICourses {
 	courses: Array<any>;
 	authors: Array<any>;
-	toggleCreteMode: (event: React.MouseEvent<HTMLElement>) => void;
+	toggleCreateMode: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-export function Courses({ courses, authors, toggleCreteMode }: ICourses) {
+export function Courses({ courses, authors, toggleCreateMode }: ICourses) {
 	const [searchValue, setSearchValue] = useState('');
-
-	function onSearch(value: string): void {
-		setSearchValue(value);
-	}
 
 	function getCoursesList(): Array<any> {
 		const reduced = courses.reduce((filtered, course) => {
@@ -44,11 +40,12 @@ export function Courses({ courses, authors, toggleCreteMode }: ICourses) {
 	return (
 		<div className={classes.courses}>
 			<div className={classes.header}>
-				<SearchBar onSearch={onSearch} />
-				<Button text={ADD_COURSE_BUTTON_TEXT} onClick={toggleCreteMode} />
+				<SearchBar onSearch={(value) => setSearchValue(value)} />
+				<Button text={ADD_COURSE_BUTTON_TEXT} onClick={toggleCreateMode} />
 			</div>
 			<div className={classes.courseList}>
-				{/* {courses.map((item) => (
+				{/* TODO 
+				{courses.map((item) => (
 					<CourseCard key={item.id} course={item} authors={authors} />
 				))} */}
 				{courseList}

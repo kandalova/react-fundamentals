@@ -18,7 +18,7 @@ function App() {
 	const [courses, setCourses] = useState(mockedCoursesList);
 	const [isCreateMode, setCreateMode] = useState(false);
 
-	function toggleCreteMode(): void {
+	function toggleCreateMode(): void {
 		setCreateMode(!isCreateMode);
 	}
 
@@ -28,7 +28,7 @@ function App() {
 	function createCourse(course: any): void {
 		course.id = uuidv4();
 		setCourses([...courses, course]);
-		setCreateMode(!isCreateMode);
+		setCreateMode(false);
 	}
 
 	return (
@@ -38,7 +38,7 @@ function App() {
 				<Courses
 					courses={courses}
 					authors={authors}
-					toggleCreteMode={toggleCreteMode}
+					toggleCreateMode={toggleCreateMode}
 				/>
 			)}
 			{isCreateMode && (

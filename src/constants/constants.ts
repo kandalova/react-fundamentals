@@ -1,29 +1,36 @@
-export const CREATE_COURSE_BUTTON = 'Create course';
-export const CREATE_COURSE_TITLE = 'Title';
-export const CREATE_COURSE_DESCRIPTION_LABEL = 'Description';
+export const enum CREATE_COURSE {
+	BUTTON = 'Create course',
+	TITLE = 'Title',
+	DESCRIPTION_LABEL = 'Description',
+	DURATION_HEADER = 'Duration',
+	DURATION_LABEL = 'Duration',
+}
 
-export const ADD_AUTHOR_HEADER = 'Add author';
-export const ADD_AUTHOR_BUTTON = 'Create author';
-export const ADD_AUTHOR_LABEL = 'Author name';
+export const enum CREATE_COURSE_AUTHORS {
+	ADD = 'Add author',
+	CREATE = 'Create author',
+	NAME = 'Author name',
+	LIST = 'Authors',
+	LIST_ADD = 'Add author',
+	COURSE_LIST = 'Course authors',
+	COURSE_LIST_DELETE = 'Delete author',
+}
 
-export const AUTHORS_LIST_HEADER = 'Authors';
-export const AUTHORS_LIST_BUTTON = 'Add author';
+export const enum ERRORS {
+	NEW_AUTHOR = 'Please fill in author name',
+	NEW_COURSE = 'Please fill in all fields',
+}
 
-export const DURATION_COURSE_HEADER = 'Duration';
-export const DURATION_COURSE_LABEL = 'Duration';
+export const enum COURSE_CARD {
+	AUTHORS = 'Authors',
+	DURATION = 'Duration',
+	CREATED = 'Created',
+	BUTTON = 'Show course',
+}
 
-export const COURSE_AUTHORS_LIST_HEADER = 'Course authors';
-export const COURSE_AUTHORS_LIST_BUTTON = 'Delete author';
-
-export const NEW_AUTHOR_ALERT = 'Please fill in author name';
-export const NEW_COURSE_ALERT = 'Please fill in all fields';
-
-export const COURSE_CARD_BUTTON = 'Show course';
-export const COURSE_CARD_PROP_AUTHORS = 'Authors';
-export const COURSE_CARD_PROP_DURATION = 'Duration';
-export const COURSE_CARD_PROP_CREATED = 'Created';
-
-export const SEARCH_BUTTON = 'Search';
-export const SEARCH_PLACEHOLDER = 'Enter';
+export const enum SEARCH {
+	BUTTON = 'Search',
+	PLACEHOLDER = 'Enter',
+}
 
 export const ADD_COURSE_BUTTON_TEXT = 'Add new course';

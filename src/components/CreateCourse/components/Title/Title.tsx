@@ -2,29 +2,26 @@ import React from 'react';
 
 import { Button } from '../../../../common/Button/Button';
 import { Input } from '../../../../common/Input/Input';
-import {
-	CREATE_COURSE_TITLE,
-	CREATE_COURSE_BUTTON,
-} from '../../../../constants/constants';
+import { CREATE_COURSE } from '../../../../constants/constants';
 
 import classes from './title.module.scss';
 
 interface ITitle {
 	value: string;
-	onClick: (event: React.MouseEvent<HTMLElement>) => void;
-	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onCreateCourseClick: (event: React.MouseEvent<HTMLElement>) => void;
+	onTitleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function Title({ value, onClick, onChange }: ITitle) {
+export function Title({ value, onCreateCourseClick, onTitleChange }: ITitle) {
 	return (
 		<div className={classes.title}>
 			<Input
 				id='course_title'
 				value={value}
-				onChange={onChange}
-				labelText={CREATE_COURSE_TITLE}
+				onChange={onTitleChange}
+				labelText={CREATE_COURSE.TITLE}
 			/>
-			<Button text={CREATE_COURSE_BUTTON} onClick={onClick} />
+			<Button text={CREATE_COURSE.BUTTON} onClick={onCreateCourseClick} />
 		</div>
 	);
 }

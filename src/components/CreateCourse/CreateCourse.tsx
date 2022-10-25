@@ -3,12 +3,9 @@ import React, { useState } from 'react';
 import { Title } from './components/Title/Title';
 import { Description } from '../../common/Description/Description';
 import {
-	AUTHORS_LIST_BUTTON,
-	AUTHORS_LIST_HEADER,
-	COURSE_AUTHORS_LIST_BUTTON,
-	COURSE_AUTHORS_LIST_HEADER,
-	CREATE_COURSE_DESCRIPTION_LABEL,
-	NEW_COURSE_ALERT,
+	CREATE_COURSE,
+	CREATE_COURSE_AUTHORS,
+	ERRORS,
 } from '../../constants/constants';
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
 import { DurationSection } from './components/DurationSection/DurationSection';
@@ -48,7 +45,7 @@ function prepareCourse(
 			creationDate,
 		};
 	} else {
-		alert(NEW_COURSE_ALERT);
+		alert(ERRORS.NEW_COURSE);
 		return null;
 	}
 }
@@ -63,21 +60,9 @@ export function CreateCourse({
 	const [courseAuthors, setCourseAuthors] = useState(initialCourseAuthors);
 	const [duration, setDuration] = useState(NaN);
 
-	function onTitleChange(event: React.ChangeEvent<HTMLInputElement>): void {
-		setTitle(event.target.value);
-	}
-	function onDescChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
-		setDesc(event.target.value);
-	}
-	function addAuthorToCourse(id: string): void {
-		setCourseAuthors([...courseAuthors, id]);
-	}
 	function deleteAuthorFromCourse(id: string): void {
 		const newCourseAuthors = courseAuthors.filter((item) => item !== id);
 		setCourseAuthors(newCourseAuthors);
-	}
-	function onDurationChange(event: React.ChangeEvent<HTMLInputElement>): void {
-		setDuration(event.target.valueAsNumber);
 	}
 	function onCreateCourse(): void {
 		const newCourse = prepareCourse(
@@ -99,12 +84,16 @@ export function CreateCourse({
 
 	return (
 		<div className={classes.createCourse}>
-			<Title onClick={onCreateCourse} value={title} onChange={onTitleChange} />
+			<Title
+				onCreateCourseClick={onCreateCourse}
+				value={title}
+				onTitleChange={(event) => setTitle(event.target.value)}
+			/>
 			<Description
 				value={description}
-				labelText={CREATE_COURSE_DESCRIPTION_LABEL}
+				labelText={CREATE_COURSE.DESCRIPTION_LABEL}
 				id={'desc_text'}
-				onChange={onDescChange}
+				onChange={(event) => setDesc(event.target.value)}
 			/>
 			<div className={classes.boxes}>
 				<div className={classes.box}>
@@ -112,19 +101,22 @@ export function CreateCourse({
 				</div>
 				<div className={classes.box}>
 					<AuthorListSection
-						title={AUTHORS_LIST_HEADER}
-						buttonText={AUTHORS_LIST_BUTTON}
+						title={CREATE_COURSE_AUTHORS.LIST}
+						buttonText={CREATE_COURSE_AUTHORS.LIST_ADD}
 						authors={availableAuthors}
-						onClick={addAuthorToCourse}
+						onClick={(id) => setCourseAuthors([...courseAuthors, id])}
 					/>
 				</div>
 				<div className={classes.box}>
-					<DurationSection onChange={onDurationChange} value={duration} />
+					<DurationSection
+						onChange={(event) => setDuration(event.target.valueAsNumber)}
+						value={duration}
+					/>
 				</div>
 				<div className={classes.box}>
 					<AuthorListSection
-						title={COURSE_AUTHORS_LIST_HEADER}
-						buttonText={COURSE_AUTHORS_LIST_BUTTON}
+						title={CREATE_COURSE_AUTHORS.COURSE_LIST}
+						buttonText={CREATE_COURSE_AUTHORS.COURSE_LIST_DELETE}
 						authors={reservedAuthors}
 						onClick={deleteAuthorFromCourse}
 					/>

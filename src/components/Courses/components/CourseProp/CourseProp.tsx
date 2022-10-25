@@ -8,12 +8,10 @@ interface ICourseProp {
 
 export function CourseProp({ prop, value }: ICourseProp) {
 	return (
-		<>
-			<p className={classes.courseProp}>
-				<span>
-					<b>{prop}:</b> {value}
-				</span>
-			</p>
-		</>
+		<p className={classes.courseProp}>
+			<span>
+				<b>{prop}:</b> {value}
+			</span>
+		</p>
 	);
 }
