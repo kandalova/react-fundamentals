@@ -1,24 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import { Header } from './components/Header/Header';
+import {
+	mockedCoursesList,
+	mockedAuthorsList,
+} from './constants/MockedCourses';
+import { Courses } from './components/Courses/Courses';
+import { CreateCourse } from './components/CreateCourse/CreateCourse';
+import { IAuthor, ICourse } from './helpers/appTypes';
+
+import classes from './app.module.scss';
 
 function App() {
+	const [authors, setAuthors] = useState<IAuthor[]>(mockedAuthorsList);
+	const [courses, setCourses] = useState<ICourse[]>(mockedCoursesList);
+	const [isCreateMode, setCreateMode] = useState<boolean>(false);
+
+	function toggleCreateMode(): void {
+		setCreateMode(!isCreateMode);
+	}
+
+	function createAuthor(value: string): void {
+		setAuthors([...authors, { name: value, id: uuidv4() }]);
+	}
+	function createCourse(course: ICourse): void {
+		course.id = uuidv4();
+		setCourses([...courses, course]);
+		setCreateMode(false);
+	}
+
 	return (
-		<div className='App'>
-			<header className='App-header'>
-				<img src={logo} className='App-logo' alt='logo' />
-				<p>
-					Edit <code>src/App.tsx</code> and save to reload.
-				</p>
-				<a
-					className='App-link'
-					href='https://reactjs.org'
-					target='_blank'
-					rel='noopener noreferrer'
-				>
-					Learn React
-				</a>
-			</header>
+		<div className={classes.app}>
+			<Header />
+			{!isCreateMode && (
+				<Courses
+					courses={courses}
+					authors={authors}
+					toggleCreateMode={toggleCreateMode}
+				/>
+			)}
+			{isCreateMode && (
+				<CreateCourse
+					createCourse={createCourse}
+					createAuthor={createAuthor}
+					authors={authors}
+				/>
+			)}
 		</div>
 	);
 }
