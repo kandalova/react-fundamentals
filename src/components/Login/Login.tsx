@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { signIn } from '../../api/user';
 import { Button } from '../../common/Button/Button';
@@ -10,19 +10,22 @@ import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './../Registration/registration.module.scss';
 
-export function Login() {
+interface ILogin {
+	onLoginUser: (user: Omit<IUser, 'password'> | null) => void;
+}
+
+export function Login({ onLoginUser }: ILogin) {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState<string>('');
-	const navigate = useNavigate();
 
-	const onLoginUser = async (event: React.FormEvent<HTMLFormElement>) => {
+	const onLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setError('');
 		const user: Omit<IUser, 'name'> = { password, email };
 		try {
-			await signIn(user);
-			navigate('/courses');
+			const loginedUser = await signIn(user);
+			onLoginUser(loginedUser);
 		} catch (error: unknown) {
 			const message = getErrorString(error);
 			setError(message);
@@ -32,7 +35,7 @@ export function Login() {
 		<div className={classes.container}>
 			<div className={classes.form}>
 				<h1>{LOGIN.HEADER}</h1>
-				<form className={classes.inputs} onSubmit={onLoginUser}>
+				<form className={classes.inputs} onSubmit={onLoginSubmit}>
 					<Input
 						id='login_email'
 						labelText={LOGIN.EMAIL_PLACEHOLDER}
