@@ -10,3 +10,10 @@ export function getAuthorsString(
 	});
 	return authorsNames.filter(Boolean).join(', ');
 }
+
+export function getAuthorsArray(
+	authorsIDs: Array<string>,
+	authors: Array<IAuthor>
+): Array<IAuthor> {
+	return authors.filter((item) => authorsIDs.includes(item.id));
+}

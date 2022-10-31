@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { AuthorsContext } from '../../../../api/authors';
 import { Button } from '../../../../common/Button/Button';
 import { COURSE_CARD } from '../../../../constants/constants';
-import { IAuthor, ICourse } from '../../../../helpers/appTypes';
+import { ICourse } from '../../../../helpers/appTypes';
 import { formatDate } from '../../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../../helpers/getCourseDuration';
 import { getAuthorsString } from '../../../../helpers/getValuesByIDsString';
@@ -12,10 +14,15 @@ import classes from './courseCard.module.scss';
 
 interface ICourseCard {
 	course: ICourse;
-	authors: Array<IAuthor>;
 }
 
-export function CourseCard({ course, authors }: ICourseCard) {
+export function CourseCard({ course }: ICourseCard) {
+	const navigate = useNavigate();
+	const authors = useContext(AuthorsContext);
+	function onCourseClick(): void {
+		navigate(`/courses/${course.id}`);
+	}
+
 	return (
 		<div className={classes.card}>
 			<div className={classes.leftInfo}>
@@ -35,7 +42,7 @@ export function CourseCard({ course, authors }: ICourseCard) {
 					prop={COURSE_CARD.CREATED}
 					value={formatDate(course.creationDate, '.')}
 				/>
-				<Button text={COURSE_CARD.BUTTON} />
+				<Button text={COURSE_CARD.BUTTON} onClick={onCourseClick} />
 			</div>
 		</div>
 	);

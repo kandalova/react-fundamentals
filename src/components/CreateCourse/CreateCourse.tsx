@@ -1,88 +1,67 @@
-import React, { useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 
 import { Title } from './components/Title/Title';
 import { Description } from '../../common/Description/Description';
 import {
 	CREATE_COURSE,
 	CREATE_COURSE_AUTHORS,
-	ERRORS,
 } from '../../constants/constants';
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
 import { DurationSection } from './components/DurationSection/DurationSection';
 import { AuthorListSection } from './components/AuthorsListSection/AuthorsListSection';
 import { IAuthor, ICourse } from '../../helpers/appTypes';
+import { AuthorsContext } from '../../api/authors';
+import { getValidatedData } from '../../helpers/createCourseHelper';
 
 import classes from './creareCourse.module.scss';
 
 interface ICreateCourse {
-	authors: Array<IAuthor>;
-	createAuthor: (value: string) => void;
-	createCourse: (course: ICourse) => void;
+	createAuthor: (author: Omit<IAuthor, 'id'>) => void;
+	createCourse: (course: Omit<ICourse, 'id'>) => void;
 }
 
-const initialCourseAuthors: Array<string> = [];
-
-function prepareCourse(
-	title: string,
-	description: string,
-	duration: number | undefined,
-	courseAuthors: Array<string>
-): ICourse | null {
-	if (
-		title &&
-		description &&
-		description.length > 2 &&
-		duration &&
-		duration > 0 &&
-		courseAuthors.length > 0
-	) {
-		const creationDate = new Date().toLocaleString();
-		return {
-			id: null,
-			title,
-			description,
-			duration,
-			authors: courseAuthors,
-			creationDate,
-		};
-	} else {
-		alert(ERRORS.NEW_COURSE);
-		return null;
-	}
-}
-
-export function CreateCourse({
-	authors,
-	createAuthor,
-	createCourse,
-}: ICreateCourse) {
+export function CreateCourse({ createAuthor, createCourse }: ICreateCourse) {
 	const [title, setTitle] = useState<string>('');
 	const [description, setDesc] = useState<string>('');
-	const [courseAuthors, setCourseAuthors] =
-		useState<string[]>(initialCourseAuthors);
-	const [duration, setDuration] = useState<number>();
+	const [courseAuthors, setCourseAuthors] = useState<string[]>([]);
+	const [duration, setDuration] = useState<number | string>('');
+	const authors = useContext(AuthorsContext);
 
 	function deleteAuthorFromCourse(id: string): void {
 		const newCourseAuthors = courseAuthors.filter((item) => item !== id);
 		setCourseAuthors(newCourseAuthors);
 	}
 	function onCreateCourse(): void {
-		const newCourse = prepareCourse(
+		const newCourse = getValidatedData({
 			title,
 			description,
 			duration,
-			courseAuthors
-		);
+			courseAuthors,
+		});
 		if (newCourse) createCourse(newCourse);
 	}
 
-	const availableAuthors = authors.filter((author) => {
-		return !courseAuthors.includes(author.id);
-	});
+	function getAvailableList(ids: string[]): Array<IAuthor> {
+		return authors.filter((author) => {
+			return !ids.includes(author.id);
+		});
+	}
 
-	const reservedAuthors = authors.filter((author) => {
-		return courseAuthors.includes(author.id);
-	});
+	function getReservedList(ids: string[]): Array<IAuthor> {
+		return authors.filter((author) => {
+			return ids.includes(author.id);
+		});
+	}
+
+	const memoizedAvailableAuthors = useMemo(
+		() => getAvailableList(courseAuthors),
+		[courseAuthors, authors]
+	);
+
+	const memoizedReservedAuthors = useMemo(
+		() => getReservedList(courseAuthors),
+		[courseAuthors, authors]
+	);
 
 	return (
 		<div className={classes.createCourse}>
@@ -105,7 +84,7 @@ export function CreateCourse({
 					<AuthorListSection
 						title={CREATE_COURSE_AUTHORS.LIST}
 						buttonText={CREATE_COURSE_AUTHORS.LIST_ADD}
-						authors={availableAuthors}
+						authors={memoizedAvailableAuthors}
 						onClick={(id) => setCourseAuthors([...courseAuthors, id])}
 					/>
 				</div>
@@ -119,7 +98,7 @@ export function CreateCourse({
 					<AuthorListSection
 						title={CREATE_COURSE_AUTHORS.COURSE_LIST}
 						buttonText={CREATE_COURSE_AUTHORS.COURSE_LIST_DELETE}
-						authors={reservedAuthors}
+						authors={memoizedReservedAuthors}
 						onClick={deleteAuthorFromCourse}
 					/>
 				</div>

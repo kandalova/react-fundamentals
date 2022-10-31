@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import { Button } from '../../../../common/Button/Button';
 import { Input } from '../../../../common/Input/Input';
 import { CREATE_COURSE_AUTHORS, ERRORS } from '../../../../constants/constants';
+import { IAuthor } from '../../../../helpers/appTypes';
 
 import classes from './../../creareCourse.module.scss';
 
 interface IAddAuthorSection {
-	onCreate: (value: string) => void;
+	onCreate: (author: Omit<IAuthor, 'id'>) => void;
 }
 
 export function AddAuthorSection({ onCreate }: IAddAuthorSection) {
@@ -15,7 +16,7 @@ export function AddAuthorSection({ onCreate }: IAddAuthorSection) {
 
 	function onClick(): void {
 		if (value && value.length > 2) {
-			onCreate(value);
+			onCreate({ name: value });
 			setValue('');
 		} else {
 			alert(ERRORS.NEW_AUTHOR);
