@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
@@ -63,6 +63,7 @@ function App() {
 								/>
 							}
 						/>
+						<Route path='*' element={<Navigate to='/' />} />
 					</Routes>
 				</div>
 			</AuthorsContext.Provider>
