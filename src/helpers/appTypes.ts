@@ -18,6 +18,8 @@ export interface IUser {
 	email: string;
 }
 
+export type SimpleUser = Omit<IUser, 'password'>;
+
 export interface ICreateCourseData {
 	title: string;
 	description: string;

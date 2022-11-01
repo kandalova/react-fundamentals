@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { signIn } from '../../api/user';
+import { saveUser, signIn } from '../../api/user';
+import { UserContext } from '../../AppWrapper';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { LOGIN } from '../../constants/constants';
-import { IUser } from '../../helpers/appTypes';
+import { IUser, SimpleUser } from '../../helpers/appTypes';
 import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './../Registration/registration.module.scss';
 
-interface ILogin {
-	onLoginUser: (user: Omit<IUser, 'password'> | null) => void;
-}
-
-export function Login({ onLoginUser }: ILogin) {
+export function Login() {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState<string>('');
+	const { setUser } = useContext(UserContext);
+	const navigate = useNavigate();
+
+	function onLoginUser(user: SimpleUser): void {
+		saveUser(user)
+			.then(setUser)
+			.then(() => navigate('/courses'));
+	}
 
 	const onLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -31,6 +36,7 @@ export function Login({ onLoginUser }: ILogin) {
 			setError(message);
 		}
 	};
+
 	return (
 		<div className={classes.container}>
 			<div className={classes.form}>

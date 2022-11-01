@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getUser, signOut } from '../../api/user';
+import { signOut } from '../../api/user';
+import { UserContext } from '../../AppWrapper';
 import { Button } from '../../common/Button/Button';
 import { HEADER } from '../../constants/constants';
-import { IUser } from '../../helpers/appTypes';
 import { Logo } from './components/Logo';
 
 import classes from './header.module.scss';
@@ -12,8 +12,8 @@ import classes from './header.module.scss';
 const loginPaths = ['/login', '/registration'];
 
 export function Header() {
-	const [user, setUser] = useState<Omit<IUser, 'password'> | null>(null);
 	const [isLogined, setIsLogined] = useState<boolean>(false);
+	const { user, setUser } = useContext(UserContext);
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -25,11 +25,7 @@ export function Header() {
 	}
 
 	useEffect(() => {
-		getUser()
-			.then(setUser)
-			.then(() => {
-				setIsLogined(!loginPaths.includes(location.pathname));
-			});
+		setIsLogined(!loginPaths.includes(location.pathname));
 	}, [location]);
 
 	return (
