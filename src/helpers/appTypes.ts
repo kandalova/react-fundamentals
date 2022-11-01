@@ -12,13 +12,21 @@ export interface IAuthor {
 	name: string;
 }
 
-export interface IUser {
+export interface ISignUp {
 	name: string;
 	password: string;
 	email: string;
 }
 
-export type SimpleUser = Omit<IUser, 'password'>;
+export interface ISignIn {
+	password: string;
+	email: string;
+}
+
+export interface IUser {
+	name: string;
+	email: string;
+}
 
 export interface ICreateCourseData {
 	title: string;

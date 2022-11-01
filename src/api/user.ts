@@ -1,12 +1,12 @@
 import { ERRORS } from '../constants/constants';
-import { IUser, SimpleUser } from '../helpers/appTypes';
+import { ISignIn, ISignUp, IUser } from '../helpers/appTypes';
 const tokenKey = 'token';
 const userKey = 'user';
 const tokenDefaultValue = null;
 
 export const userDefaultValue = null;
 
-export async function signUp(user: IUser) {
+export async function signUp(user: ISignUp) {
 	const response = await fetch('http://localhost:4000/register', {
 		method: 'POST',
 		body: JSON.stringify(user),
@@ -23,7 +23,7 @@ export async function signUp(user: IUser) {
 	}
 }
 
-export async function signIn(user: Omit<IUser, 'name'>): Promise<SimpleUser> {
+export async function signIn(user: ISignIn): Promise<IUser> {
 	const response = await fetch('http://localhost:4000/login', {
 		method: 'POST',
 		body: JSON.stringify(user),
@@ -51,7 +51,7 @@ export async function signOut(): Promise<null> {
 	return null;
 }
 
-export async function getUsers(): Promise<SimpleUser | null> {
+export async function getUsers(): Promise<IUser | null> {
 	const user = await localStorage.getItem(userKey);
 	const token = await getToken();
 	if (user && token) {
@@ -60,7 +60,7 @@ export async function getUsers(): Promise<SimpleUser | null> {
 	return null;
 }
 
-export async function saveUser(user: SimpleUser): Promise<SimpleUser> {
+export async function saveUser(user: IUser): Promise<IUser> {
 	localStorage.setItem(userKey, JSON.stringify(user));
 	return user;
 }
@@ -81,7 +81,7 @@ export async function getToken(): Promise<string | null> {
 	return JSON.parse(content);
 }
 
-export async function getUser(): Promise<SimpleUser | null> {
+export async function getUser(): Promise<IUser | null> {
 	const content = localStorage.getItem(userKey);
 	if (!content) {
 		return userDefaultValue;

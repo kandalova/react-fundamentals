@@ -1,13 +1,10 @@
 import React from 'react';
-import { userDefaultValue } from './api/user';
 
 import App from './App';
 import { createUserContext } from './context/UserContext';
-import { SimpleUser } from './helpers/appTypes';
+import { IUser } from './helpers/appTypes';
 
-const [UserCtx, UserContextProvider] = createUserContext<SimpleUser | null>(
-	null
-);
+const [UserCtx, UserContextProvider] = createUserContext<IUser | null>(null);
 export const UserContext = UserCtx;
 
 function AppWrapper() {

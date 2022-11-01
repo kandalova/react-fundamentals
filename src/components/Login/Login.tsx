@@ -6,7 +6,7 @@ import { UserContext } from '../../AppWrapper';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { LOGIN } from '../../constants/constants';
-import { IUser, SimpleUser } from '../../helpers/appTypes';
+import { ISignIn, IUser } from '../../helpers/appTypes';
 import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './../Registration/registration.module.scss';
@@ -18,7 +18,7 @@ export function Login() {
 	const { setUser } = useContext(UserContext);
 	const navigate = useNavigate();
 
-	function onLoginUser(user: SimpleUser): void {
+	function onLoginUser(user: IUser): void {
 		saveUser(user)
 			.then(setUser)
 			.then(() => navigate('/courses'));
@@ -27,7 +27,7 @@ export function Login() {
 	const onLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setError('');
-		const user: Omit<IUser, 'name'> = { password, email };
+		const user: ISignIn = { password, email };
 		try {
 			const loginedUser = await signIn(user);
 			onLoginUser(loginedUser);

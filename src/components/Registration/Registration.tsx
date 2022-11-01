@@ -5,7 +5,7 @@ import { signUp } from '../../api/user';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { REGISTRATION } from '../../constants/constants';
-import { IUser } from '../../helpers/appTypes';
+import { ISignUp } from '../../helpers/appTypes';
 import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './registration.module.scss';
@@ -20,7 +20,7 @@ export function Registration() {
 	const onRegisterUser = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setError('');
-		const user: IUser = { name, password, email };
+		const user: ISignUp = { name, password, email };
 		try {
 			await signUp(user);
 			navigate('/login');
