@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { AuthorsContext } from '../../../../api/authors';
 import { Button } from '../../../../common/Button/Button';
@@ -17,11 +17,7 @@ interface ICourseCard {
 }
 
 export function CourseCard({ course }: ICourseCard) {
-	const navigate = useNavigate();
 	const authors = useContext(AuthorsContext);
-	function onCourseClick(): void {
-		navigate(`/courses/${course.id}`);
-	}
 
 	return (
 		<div className={classes.card}>
@@ -42,7 +38,9 @@ export function CourseCard({ course }: ICourseCard) {
 					prop={COURSE_CARD.CREATED}
 					value={formatDate(course.creationDate, '.')}
 				/>
-				<Button text={COURSE_CARD.BUTTON} onClick={onCourseClick} />
+				<Link to={`/courses/${course.id}`}>
+					<Button text={COURSE_CARD.BUTTON} />
+				</Link>
 			</div>
 		</div>
 	);

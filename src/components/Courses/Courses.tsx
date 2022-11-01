@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { CoursesContext } from '../../api/courses';
 import { Button } from '../../common/Button/Button';
@@ -13,12 +13,7 @@ import classes from './courses.module.scss';
 
 export function Courses() {
 	const [searchValue, setSearchValue] = useState<string>('');
-	const navigate = useNavigate();
 	const courses = useContext(CoursesContext);
-
-	function addCourse(): void {
-		navigate('/courses/add');
-	}
 
 	function getCoursesList(courses: ICourse[], searchValue: string): ICourse[] {
 		return courses.filter((course) => {
@@ -38,7 +33,9 @@ export function Courses() {
 		<div className={classes.courses}>
 			<div className={classes.header}>
 				<SearchBar onSearch={(value) => setSearchValue(value)} />
-				<Button text={ADD_COURSE_BUTTON_TEXT} onClick={addCourse} />
+				<Link to={'/courses/add'}>
+					<Button text={ADD_COURSE_BUTTON_TEXT} />
+				</Link>
 			</div>
 			<div className={classes.courseList}>
 				{memoizedCourseList.map((item: ICourse) => (
