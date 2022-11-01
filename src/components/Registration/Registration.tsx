@@ -52,6 +52,7 @@ export function Registration() {
 						labelText={REGISTRATION.PASSWORD_PLACEHOLDER}
 						value={password}
 						onChange={(event) => setPassword(event.target.value)}
+						type='password'
 					/>
 					<Button text={REGISTRATION.BUTTON} />
 				</form>

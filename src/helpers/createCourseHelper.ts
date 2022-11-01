@@ -1,5 +1,5 @@
 import { ERRORS } from '../constants/constants';
-import { ICourse, ICreateCourseData } from './appTypes';
+import { IAuthor, ICourse, ICreateCourseData } from './appTypes';
 
 export function isValidCourseData({
 	title,
@@ -41,4 +41,22 @@ export function getValidatedData(
 	}
 	alert(ERRORS.NEW_COURSE);
 	return null;
+}
+
+export function getAvailableList(
+	ids: string[],
+	authors: Array<IAuthor>
+): Array<IAuthor> {
+	return authors.filter((author) => {
+		return !ids.includes(author.id);
+	});
+}
+
+export function getReservedList(
+	ids: string[],
+	authors: Array<IAuthor>
+): Array<IAuthor> {
+	return authors.filter((author) => {
+		return ids.includes(author.id);
+	});
 }

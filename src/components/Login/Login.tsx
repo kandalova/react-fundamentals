@@ -52,6 +52,7 @@ export function Login() {
 						id='login_password'
 						labelText={LOGIN.PASSWORD_PLACEHOLDER}
 						value={password}
+						type='password'
 						onChange={(event) => setPassword(event.target.value)}
 					/>
 					<Button text={LOGIN.BUTTON} />

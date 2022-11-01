@@ -11,7 +11,11 @@ import { DurationSection } from './components/DurationSection/DurationSection';
 import { AuthorListSection } from './components/AuthorsListSection/AuthorsListSection';
 import { IAuthor, ICourse } from '../../helpers/appTypes';
 import { AuthorsContext } from '../../api/authors';
-import { getValidatedData } from '../../helpers/createCourseHelper';
+import {
+	getAvailableList,
+	getReservedList,
+	getValidatedData,
+} from '../../helpers/createCourseHelper';
 
 import classes from './creareCourse.module.scss';
 
@@ -41,25 +45,13 @@ export function CreateCourse({ createAuthor, createCourse }: ICreateCourse) {
 		if (newCourse) createCourse(newCourse);
 	}
 
-	function getAvailableList(ids: string[]): Array<IAuthor> {
-		return authors.filter((author) => {
-			return !ids.includes(author.id);
-		});
-	}
-
-	function getReservedList(ids: string[]): Array<IAuthor> {
-		return authors.filter((author) => {
-			return ids.includes(author.id);
-		});
-	}
-
 	const memoizedAvailableAuthors = useMemo(
-		() => getAvailableList(courseAuthors),
+		() => getAvailableList(courseAuthors, authors),
 		[courseAuthors, authors]
 	);
 
 	const memoizedReservedAuthors = useMemo(
-		() => getReservedList(courseAuthors),
+		() => getReservedList(courseAuthors, authors),
 		[courseAuthors, authors]
 	);
 
