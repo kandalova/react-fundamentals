@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { Form, Formik } from 'formik';
+import React from 'react';
 
 import { Button } from '../../../../common/Button/Button';
 import { Input } from '../../../../common/Input/Input';
@@ -6,32 +7,27 @@ import { SEARCH } from '../../../../constants/constants';
 
 import classes from './searchBar.module.scss';
 
-interface ISearchBar {
-	onSearch?: (a: string) => void;
+interface ISearch {
+	onSearch: ({ search }: ISearchPayload) => void;
 }
 
-export function SearchBar({ onSearch }: ISearchBar) {
-	const [value, setValue] = useState<string>('');
+export interface ISearchPayload {
+	search: string;
+}
 
-	function onKeyDown(event: React.KeyboardEvent): void {
-		if (event.key === 'Enter' && onSearch) {
-			onSearch(value);
-		}
-	}
+const initialValues: ISearchPayload = {
+	search: '',
+};
 
+export function SearchBar({ onSearch }: ISearch) {
 	return (
 		<div className={classes.searchBar}>
-			<Input
-				id='search_bar_input'
-				value={value}
-				onChange={(event) => setValue(event.target.value)}
-				onKeyDown={onKeyDown}
-				placeholderText={SEARCH.PLACEHOLDER}
-			/>
-			<Button
-				text={SEARCH.BUTTON}
-				onClick={() => onSearch && onSearch(value)}
-			/>
+			<Formik initialValues={initialValues} onSubmit={onSearch}>
+				<Form className={classes.form}>
+					<Input id='search' placeholder={SEARCH.PLACEHOLDER} />
+					<Button text={SEARCH.BUTTON} />
+				</Form>
+			</Formik>
 		</div>
 	);
 }

@@ -16,11 +16,12 @@
 		flex-wrap: wrap;
 		background-color: rgba(79, 182, 105, 0.116);
 		border-radius: 4px;
+		margin: 20px 0;
 	}
 
 	.box{
 		width: 48%;
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 		padding: 10px;
 
 		&>*{

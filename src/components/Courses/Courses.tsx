@@ -7,7 +7,7 @@ import { ADD_COURSE_BUTTON_TEXT } from '../../constants/constants';
 import { ICourse } from '../../helpers/appTypes';
 import { checkStringIncludes } from '../../helpers/checkStringIncludes';
 import { CourseCard } from './components/CourseCard/CourseCard';
-import { SearchBar } from './components/SearchBar/SearchBar';
+import { ISearchPayload, SearchBar } from './components/SearchBar/SearchBar';
 
 import classes from './courses.module.scss';
 
@@ -32,7 +32,9 @@ export function Courses() {
 	return (
 		<div className={classes.courses}>
 			<div className={classes.header}>
-				<SearchBar onSearch={(value) => setSearchValue(value)} />
+				<SearchBar
+					onSearch={({ search }: ISearchPayload) => setSearchValue(search)}
+				/>
 				<Link to={'/courses/add'}>
 					<Button text={ADD_COURSE_BUTTON_TEXT} />
 				</Link>

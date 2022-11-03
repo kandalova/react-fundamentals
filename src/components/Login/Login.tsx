@@ -1,5 +1,7 @@
+import { Formik, Form } from 'formik';
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 
 import { saveUser, signIn } from '../../api/user';
 import { UserContext } from '../../AppWrapper';
@@ -11,9 +13,17 @@ import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './../Registration/registration.module.scss';
 
+const initialValues: ISignIn = {
+	email: '',
+	password: '',
+};
+
+const validationSchema = yup.object({
+	email: yup.string().email().required(),
+	password: yup.string().min(6).required(),
+});
+
 export function Login() {
-	const [email, setEmail] = useState<string>('');
-	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState<string>('');
 	const { setUser } = useContext(UserContext);
 	const navigate = useNavigate();
@@ -24,12 +34,10 @@ export function Login() {
 			.then(() => navigate('/courses'));
 	}
 
-	const onLoginSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onLoginSubmit = async ({ email, password }: ISignIn) => {
 		setError('');
-		const user: ISignIn = { password, email };
 		try {
-			const loginedUser = await signIn(user);
+			const loginedUser = await signIn({ email, password });
 			onLoginUser(loginedUser);
 		} catch (error: unknown) {
 			const message = getErrorString(error);
@@ -41,22 +49,21 @@ export function Login() {
 		<div className={classes.container}>
 			<div className={classes.form}>
 				<h1>{LOGIN.HEADER}</h1>
-				<form className={classes.inputs} onSubmit={onLoginSubmit}>
-					<Input
-						id='login_email'
-						labelText={LOGIN.EMAIL_PLACEHOLDER}
-						value={email}
-						onChange={(event) => setEmail(event.target.value)}
-					/>
-					<Input
-						id='login_password'
-						labelText={LOGIN.PASSWORD_PLACEHOLDER}
-						value={password}
-						type='password'
-						onChange={(event) => setPassword(event.target.value)}
-					/>
-					<Button text={LOGIN.BUTTON} />
-				</form>
+				<Formik
+					initialValues={initialValues}
+					onSubmit={onLoginSubmit}
+					validationSchema={validationSchema}
+				>
+					<Form className={classes.inputs}>
+						<Input id='email' labelText={LOGIN.EMAIL_PLACEHOLDER} />
+						<Input
+							id='password'
+							labelText={LOGIN.PASSWORD_PLACEHOLDER}
+							type='password'
+						/>
+						<Button text={LOGIN.BUTTON} />
+					</Form>
+				</Formik>
 				<p>
 					{LOGIN.TO_REGISTARTION}{' '}
 					<Link to='/registration'>{LOGIN.REGISTRATION}</Link>

@@ -1,6 +1,5 @@
 .inputParent {
 	position: relative;
-	height: 40px;
 	width: 100%;
 
 	input, label {
@@ -26,10 +25,32 @@
 		border: solid 2px coral;
 		box-shadow: 0 0 5px rgba(87, 79, 79, 0.559);
 	}
+
+	.inputError {
+		outline: none;
+		border: solid 2px rgba(253, 0, 21);
+	}
 	
 	label{
 		position: absolute;
 		top: -20px;
 		font-size: 14px;
+	}
+
+	.error{
+		position: absolute;
+		bottom: -20px;
+		font-size: 14px;
+		height: 20px;
+		font-size: 14px;
+		color: red;
+	}
+
+	.hide{
+		visibility: hidden;
+	}
+
+	.show{
+		visibility: visible;
 	}
 }

@@ -2,19 +2,9 @@ import { ERRORS } from '../constants/constants';
 import { IAuthor, ICourse, ICreateCourseData } from './appTypes';
 
 export function isValidCourseData({
-	title,
-	description,
-	duration,
 	courseAuthors,
 }: ICreateCourseData): boolean {
-	return !!(
-		title &&
-		description &&
-		description.length > 2 &&
-		duration &&
-		duration > 0 &&
-		courseAuthors.length > 0
-	);
+	return courseAuthors.length > 0;
 }
 
 export function getCourse({

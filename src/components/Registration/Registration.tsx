@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { Formik, Form } from 'formik';
 
 import { signUp } from '../../api/user';
 import { Button } from '../../common/Button/Button';
@@ -10,19 +12,26 @@ import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './registration.module.scss';
 
+const initialValues: ISignUp = {
+	name: '',
+	email: '',
+	password: '',
+};
+
+const validationSchema = yup.object({
+	email: yup.string().email().required(),
+	password: yup.string().min(6).required(),
+	name: yup.string().min(6).required(),
+});
+
 export function Registration() {
-	const [name, setName] = useState<string>('');
-	const [email, setEmail] = useState<string>('');
-	const [password, setPassword] = useState<string>('');
 	const [error, setError] = useState<string>('');
 	const navigate = useNavigate();
 
-	const onRegisterUser = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const onRegisterSubmit = async ({ name, email, password }: ISignUp) => {
 		setError('');
-		const user: ISignUp = { name, password, email };
 		try {
-			await signUp(user);
+			await signUp({ name, password, email });
 			navigate('/login');
 		} catch (error: unknown) {
 			const message = getErrorString(error);
@@ -34,28 +43,22 @@ export function Registration() {
 		<div className={classes.container}>
 			<div className={classes.form}>
 				<h1>{REGISTRATION.HEADER}</h1>
-				<form className={classes.inputs} onSubmit={onRegisterUser}>
-					<Input
-						id='reg_name'
-						labelText={REGISTRATION.NAME_PLACEHOLDER}
-						value={name}
-						onChange={(event) => setName(event.target.value)}
-					/>
-					<Input
-						id='reg_email'
-						labelText={REGISTRATION.EMAIL_PLACEHOLDER}
-						value={email}
-						onChange={(event) => setEmail(event.target.value)}
-					/>
-					<Input
-						id='reg_password'
-						labelText={REGISTRATION.PASSWORD_PLACEHOLDER}
-						value={password}
-						onChange={(event) => setPassword(event.target.value)}
-						type='password'
-					/>
-					<Button text={REGISTRATION.BUTTON} />
-				</form>
+				<Formik
+					initialValues={initialValues}
+					onSubmit={onRegisterSubmit}
+					validationSchema={validationSchema}
+				>
+					<Form className={classes.inputs}>
+						<Input id='name' labelText={REGISTRATION.NAME_PLACEHOLDER} />
+						<Input id='email' labelText={REGISTRATION.EMAIL_PLACEHOLDER} />
+						<Input
+							id='password'
+							labelText={REGISTRATION.PASSWORD_PLACEHOLDER}
+							type='password'
+						/>
+						<Button text={REGISTRATION.BUTTON} />
+					</Form>
+				</Formik>
 				<p>
 					{REGISTRATION.TO_LOGIN} <Link to='/login'>{REGISTRATION.LOGIN}</Link>
 				</p>
