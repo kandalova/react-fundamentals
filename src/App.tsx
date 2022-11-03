@@ -63,7 +63,7 @@ function App() {
 								/>
 							}
 						/>
-						<Route path='*' element={<Navigate to='/' />} />
+						<Route path='*' element={<Navigate to='/courses' />} />
 					</Routes>
 				</div>
 			</AuthorsContext.Provider>
