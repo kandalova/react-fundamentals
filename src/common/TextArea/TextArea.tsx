@@ -2,14 +2,14 @@ import { useField } from 'formik';
 import React from 'react';
 import classes from './textArea.module.scss';
 
-interface ITeaxtArea {
+interface ITextArea {
 	id: string;
 	labelText?: string;
 	onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 	value?: string;
 }
 
-export function TeaxtArea({ id, labelText }: ITeaxtArea) {
+export function TextArea({ id, labelText }: ITextArea) {
 	const [field, meta] = useField(id);
 	const hasError = meta.touched && meta.error;
 	return (

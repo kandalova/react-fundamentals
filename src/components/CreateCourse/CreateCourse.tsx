@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { Form, Formik } from 'formik';
 
 import { Title } from './components/Title/Title';
-import { TeaxtArea } from '../../common/TextArea/TextArea';
+import { TextArea } from '../../common/TextArea/TextArea';
 import {
 	CREATE_COURSE,
 	CREATE_COURSE_AUTHORS,
@@ -100,7 +100,7 @@ export function CreateCourse({ createAuthor, createCourse }: ICreateCourse) {
 				<Form>
 					<div>
 						<Title id='title' />
-						<TeaxtArea
+						<TextArea
 							labelText={CREATE_COURSE.DESCRIPTION_LABEL}
 							id='description'
 						/>

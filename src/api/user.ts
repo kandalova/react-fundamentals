@@ -51,15 +51,6 @@ export async function signOut(): Promise<null> {
 	return null;
 }
 
-export async function getUsers(): Promise<IUser | null> {
-	const user = await localStorage.getItem(userKey);
-	const token = await getToken();
-	if (user && token) {
-		return JSON.parse(user);
-	}
-	return null;
-}
-
 export async function saveUser(user: IUser): Promise<IUser> {
 	localStorage.setItem(userKey, JSON.stringify(user));
 	return user;
