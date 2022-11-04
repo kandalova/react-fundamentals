@@ -1,27 +1,24 @@
 import { useField } from 'formik';
 import React from 'react';
-import classes from './input.module.scss';
+import classes from './textArea.module.scss';
 
-interface IInput {
+interface ITextArea {
 	id: string;
-	placeholder?: string;
 	labelText?: string;
-	type?: string;
-	value?: any;
+	onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+	value?: string;
 }
 
-export function Input({ id, labelText, ...props }: IInput) {
+export function TextArea({ id, labelText }: ITextArea) {
 	const [field, meta] = useField(id);
 	const hasError = meta.touched && meta.error;
 	return (
 		<div className={classes.inputParent}>
 			<label htmlFor={id}>{labelText}</label>
-			<input
-				className={hasError ? classes.inputError : ''}
+			<textarea
 				id={id}
 				{...field}
-				name={id}
-				{...props}
+				className={hasError ? classes.inputError : ''}
 			/>
 			<div className={classes.error}>
 				<span className={hasError ? classes.show : classes.hide}>

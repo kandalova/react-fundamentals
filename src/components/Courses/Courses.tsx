@@ -1,22 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
+import { CoursesContext } from '../../api/courses';
 import { Button } from '../../common/Button/Button';
 import { ADD_COURSE_BUTTON_TEXT } from '../../constants/constants';
-import { IAuthor, ICourse } from '../../helpers/appTypes';
+import { ICourse } from '../../helpers/appTypes';
 import { checkStringIncludes } from '../../helpers/checkStringIncludes';
 import { CourseCard } from './components/CourseCard/CourseCard';
-import { SearchBar } from './components/SearchBar/SearchBar';
+import { ISearchPayload, SearchBar } from './components/SearchBar/SearchBar';
 
 import classes from './courses.module.scss';
 
-interface ICourses {
-	courses: Array<ICourse>;
-	authors: Array<IAuthor>;
-	toggleCreateMode: (event: React.MouseEvent<HTMLElement>) => void;
-}
-
-export function Courses({ courses, authors, toggleCreateMode }: ICourses) {
+export function Courses() {
 	const [searchValue, setSearchValue] = useState<string>('');
+	const courses = useContext(CoursesContext);
 
 	function getCoursesList(courses: ICourse[], searchValue: string): ICourse[] {
 		return courses.filter((course) => {
@@ -35,12 +32,16 @@ export function Courses({ courses, authors, toggleCreateMode }: ICourses) {
 	return (
 		<div className={classes.courses}>
 			<div className={classes.header}>
-				<SearchBar onSearch={(value) => setSearchValue(value)} />
-				<Button text={ADD_COURSE_BUTTON_TEXT} onClick={toggleCreateMode} />
+				<SearchBar
+					onSearch={({ search }: ISearchPayload) => setSearchValue(search)}
+				/>
+				<Link to={'/courses/add'}>
+					<Button text={ADD_COURSE_BUTTON_TEXT} />
+				</Link>
 			</div>
 			<div className={classes.courseList}>
-				{memoizedCourseList.map((item) => (
-					<CourseCard key={item.id} course={item} authors={authors} />
+				{memoizedCourseList.map((item: ICourse) => (
+					<CourseCard key={item.id} course={item} />
 				))}
 			</div>
 		</div>

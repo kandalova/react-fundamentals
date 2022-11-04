@@ -1,53 +1,73 @@
-import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useContext, useEffect, useState } from 'react';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
-import {
-	mockedCoursesList,
-	mockedAuthorsList,
-} from './constants/MockedCourses';
-import { Courses } from './components/Courses/Courses';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
 import { IAuthor, ICourse } from './helpers/appTypes';
+import { Registration } from './components/Registration/Registration';
+import { Login } from './components/Login/Login';
+import { Courses } from './components/Courses/Courses';
+import { CourseInfo } from './components/Courses/CourseInfo/CourseInfo';
+
+import { getToken, getUser } from './api/user';
+import { CoursesContext, getCourses, saveCourses } from './api/courses';
+import { AuthorsContext, getAuthors, saveAuthors } from './api/authors';
 
 import classes from './app.module.scss';
+import { UserContext } from './AppWrapper';
 
 function App() {
-	const [authors, setAuthors] = useState<IAuthor[]>(mockedAuthorsList);
-	const [courses, setCourses] = useState<ICourse[]>(mockedCoursesList);
-	const [isCreateMode, setCreateMode] = useState<boolean>(false);
+	const [authors, setAuthors] = useState<IAuthor[]>([]);
+	const [courses, setCourses] = useState<ICourse[]>([]);
+	const navigate = useNavigate();
+	const { setUser } = useContext(UserContext);
 
-	function toggleCreateMode(): void {
-		setCreateMode(!isCreateMode);
+	function createAuthor(author: Omit<IAuthor, 'id'>): void {
+		saveAuthors(author).then(setAuthors);
+	}
+	function createCourse(course: Omit<ICourse, 'id'>): void {
+		saveCourses(course)
+			.then(setCourses)
+			.then(() => navigate('/courses'));
 	}
 
-	function createAuthor(value: string): void {
-		setAuthors([...authors, { name: value, id: uuidv4() }]);
-	}
-	function createCourse(course: ICourse): void {
-		course.id = uuidv4();
-		setCourses([...courses, course]);
-		setCreateMode(false);
-	}
+	useEffect(() => {
+		getToken().then((token) => {
+			if (!token) {
+				navigate('/login');
+			} else {
+				getUser().then(setUser);
+			}
+		});
+
+		getCourses().then(setCourses);
+		getAuthors().then(setAuthors);
+	}, []);
 
 	return (
-		<div className={classes.app}>
-			<Header />
-			{!isCreateMode && (
-				<Courses
-					courses={courses}
-					authors={authors}
-					toggleCreateMode={toggleCreateMode}
-				/>
-			)}
-			{isCreateMode && (
-				<CreateCourse
-					createCourse={createCourse}
-					createAuthor={createAuthor}
-					authors={authors}
-				/>
-			)}
-		</div>
+		<CoursesContext.Provider value={courses}>
+			<AuthorsContext.Provider value={authors}>
+				<div className={classes.app}>
+					<Header />
+					<Routes>
+						<Route path={'/registration'} element={<Registration />} />
+						<Route path={'/login'} element={<Login />} />
+						<Route path={'/courses'} element={<Courses />} />
+						<Route path='/courses/:id' element={<CourseInfo />} />
+						<Route
+							path={'/courses/add'}
+							element={
+								<CreateCourse
+									createCourse={createCourse}
+									createAuthor={createAuthor}
+								/>
+							}
+						/>
+						<Route path='*' element={<Navigate to='/courses' />} />
+					</Routes>
+				</div>
+			</AuthorsContext.Provider>
+		</CoursesContext.Provider>
 	);
 }
 

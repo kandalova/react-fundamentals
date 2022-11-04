@@ -1,12 +1,19 @@
 .button{
 	display: inline-block;
-  background:rgba(59, 57, 57, 0.559);
+  box-sizing: border-box;
+  background-color:rgba(59, 57, 57, 0.559);
   color: #fff;
-  border: none;
+  border: none;  
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
   font-size: 15px;
   font-family: inherit;
+}
+
+.button:hover{
+  background-color: coral;
+  box-shadow: 0 0 5px rgba(87, 79, 79, 0.559);
+
 }

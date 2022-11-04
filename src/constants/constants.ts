@@ -19,6 +19,8 @@ export const enum CREATE_COURSE_AUTHORS {
 export const enum ERRORS {
 	NEW_AUTHOR = 'Please fill in author name',
 	NEW_COURSE = 'Please fill in all fields',
+	REGISTRATION = 'Sorry, Sign up failed. Please try later!',
+	LOGIN = 'Sorry, Sign in failed. Please try later!',
 }
 
 export const enum COURSE_CARD {
@@ -34,3 +36,40 @@ export const enum SEARCH {
 }
 
 export const ADD_COURSE_BUTTON_TEXT = 'Add new course';
+
+export const enum REGISTRATION {
+	HEADER = 'Registration',
+	NAME = 'Name',
+	NAME_PLACEHOLDER = 'Enter name',
+	EMAIL = 'Email',
+	EMAIL_PLACEHOLDER = 'Enter email',
+	PASSWORD = 'Password',
+	PASSWORD_PLACEHOLDER = 'Enter password',
+	BUTTON = 'Registration',
+	TO_LOGIN = 'If you hava an account you can',
+	LOGIN = 'Login',
+}
+
+export const enum LOGIN {
+	HEADER = 'LOGIN',
+	EMAIL = 'Email',
+	EMAIL_PLACEHOLDER = 'Enter email',
+	PASSWORD = 'Password',
+	PASSWORD_PLACEHOLDER = 'Enter password',
+	BUTTON = 'Login',
+	TO_REGISTARTION = 'If you not hava an account you can',
+	REGISTRATION = 'Registration',
+}
+
+export const enum COURSE_INFO {
+	BACK = 'Back to courses',
+	ID = 'ID',
+	AUTHORS = 'Authors',
+	DURATION = 'Duration',
+	CREATED = 'Created',
+}
+
+export const enum HEADER {
+	LOGIN = 'Login',
+	LOGOUT = 'Logout',
+}

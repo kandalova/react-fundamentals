@@ -1,129 +1,148 @@
-import React, { useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
+import * as yup from 'yup';
+import { Form, Formik } from 'formik';
 
 import { Title } from './components/Title/Title';
-import { Description } from '../../common/Description/Description';
+import { TextArea } from '../../common/TextArea/TextArea';
 import {
 	CREATE_COURSE,
 	CREATE_COURSE_AUTHORS,
-	ERRORS,
 } from '../../constants/constants';
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
 import { DurationSection } from './components/DurationSection/DurationSection';
 import { AuthorListSection } from './components/AuthorsListSection/AuthorsListSection';
 import { IAuthor, ICourse } from '../../helpers/appTypes';
+import { AuthorsContext } from '../../api/authors';
+import {
+	getAvailableList,
+	getReservedList,
+	getValidatedData,
+} from '../../helpers/createCourseHelper';
 
 import classes from './creareCourse.module.scss';
 
 interface ICreateCourse {
-	authors: Array<IAuthor>;
-	createAuthor: (value: string) => void;
-	createCourse: (course: ICourse) => void;
+	createAuthor: (author: Omit<IAuthor, 'id'>) => void;
+	createCourse: (course: Omit<ICourse, 'id'>) => void;
 }
 
-const initialCourseAuthors: Array<string> = [];
-
-function prepareCourse(
-	title: string,
-	description: string,
-	duration: number | undefined,
-	courseAuthors: Array<string>
-): ICourse | null {
-	if (
-		title &&
-		description &&
-		description.length > 2 &&
-		duration &&
-		duration > 0 &&
-		courseAuthors.length > 0
-	) {
-		const creationDate = new Date().toLocaleString();
-		return {
-			id: null,
-			title,
-			description,
-			duration,
-			authors: courseAuthors,
-			creationDate,
-		};
-	} else {
-		alert(ERRORS.NEW_COURSE);
-		return null;
-	}
+export interface ICreateCoursePayload {
+	title: string;
+	description: string;
+	duration: string | number;
 }
 
-export function CreateCourse({
-	authors,
-	createAuthor,
-	createCourse,
-}: ICreateCourse) {
-	const [title, setTitle] = useState<string>('');
-	const [description, setDesc] = useState<string>('');
-	const [courseAuthors, setCourseAuthors] =
-		useState<string[]>(initialCourseAuthors);
-	const [duration, setDuration] = useState<number>();
+const initialValues: ICreateCoursePayload = {
+	title: '',
+	description: '',
+	duration: '',
+};
+
+const validationSchema = yup.object({
+	title: yup.string().min(2).required(),
+	description: yup.string().min(2).required(),
+	duration: yup.number().min(1).required().positive().integer(),
+});
+
+interface IAuthorPayload {
+	name: string;
+}
+
+const authorInitialValues: IAuthorPayload = {
+	name: '',
+};
+
+const authorValidationSchema = yup.object({
+	name: yup.string().min(2).required(),
+});
+
+export function CreateCourse({ createAuthor, createCourse }: ICreateCourse) {
+	const [courseAuthors, setCourseAuthors] = useState<string[]>([]);
+	const authors = useContext(AuthorsContext);
 
 	function deleteAuthorFromCourse(id: string): void {
 		const newCourseAuthors = courseAuthors.filter((item) => item !== id);
 		setCourseAuthors(newCourseAuthors);
 	}
-	function onCreateCourse(): void {
-		const newCourse = prepareCourse(
+
+	function onCreateCourseSubmit({
+		title,
+		description,
+		duration,
+	}: ICreateCoursePayload) {
+		console.log('parent');
+		const newCourse = getValidatedData({
 			title,
 			description,
 			duration,
-			courseAuthors
-		);
+			courseAuthors,
+		});
 		if (newCourse) createCourse(newCourse);
 	}
 
-	const availableAuthors = authors.filter((author) => {
-		return !courseAuthors.includes(author.id);
-	});
+	const memoizedAvailableAuthors = useMemo(
+		() => getAvailableList(courseAuthors, authors),
+		[courseAuthors, authors]
+	);
 
-	const reservedAuthors = authors.filter((author) => {
-		return courseAuthors.includes(author.id);
-	});
+	const memoizedReservedAuthors = useMemo(
+		() => getReservedList(courseAuthors, authors),
+		[courseAuthors, authors]
+	);
 
 	return (
 		<div className={classes.createCourse}>
-			<Title
-				onCreateCourseClick={onCreateCourse}
-				value={title}
-				onTitleChange={(event) => setTitle(event.target.value)}
-			/>
-			<Description
-				value={description}
-				labelText={CREATE_COURSE.DESCRIPTION_LABEL}
-				id={'desc_text'}
-				onChange={(event) => setDesc(event.target.value)}
-			/>
-			<div className={classes.boxes}>
-				<div className={classes.box}>
-					<AddAuthorSection onCreate={createAuthor} />
-				</div>
-				<div className={classes.box}>
-					<AuthorListSection
-						title={CREATE_COURSE_AUTHORS.LIST}
-						buttonText={CREATE_COURSE_AUTHORS.LIST_ADD}
-						authors={availableAuthors}
-						onClick={(id) => setCourseAuthors([...courseAuthors, id])}
-					/>
-				</div>
-				<div className={classes.box}>
-					<DurationSection
-						onChange={(event) => setDuration(event.target.valueAsNumber)}
-						value={duration}
-					/>
-				</div>
-				<div className={classes.box}>
-					<AuthorListSection
-						title={CREATE_COURSE_AUTHORS.COURSE_LIST}
-						buttonText={CREATE_COURSE_AUTHORS.COURSE_LIST_DELETE}
-						authors={reservedAuthors}
-						onClick={deleteAuthorFromCourse}
-					/>
-				</div>
-			</div>
+			<Formik
+				initialValues={initialValues}
+				onSubmit={onCreateCourseSubmit}
+				validationSchema={validationSchema}
+			>
+				<Form>
+					<div>
+						<Title id='title' />
+						<TextArea
+							labelText={CREATE_COURSE.DESCRIPTION_LABEL}
+							id='description'
+						/>
+					</div>
+					<div className={classes.boxes}>
+						<div className={classes.box}>
+							<DurationSection id='duration' />
+						</div>
+					</div>
+					<div className={classes.boxes}>
+						<div className={classes.box}>
+							<AuthorListSection
+								title={CREATE_COURSE_AUTHORS.LIST}
+								buttonText={CREATE_COURSE_AUTHORS.LIST_ADD}
+								authors={memoizedAvailableAuthors}
+								onClick={(id) => setCourseAuthors([...courseAuthors, id])}
+							/>
+						</div>
+						<div className={classes.box}>
+							<AuthorListSection
+								title={CREATE_COURSE_AUTHORS.COURSE_LIST}
+								buttonText={CREATE_COURSE_AUTHORS.COURSE_LIST_DELETE}
+								authors={memoizedReservedAuthors}
+								onClick={deleteAuthorFromCourse}
+							/>
+						</div>
+					</div>
+				</Form>
+			</Formik>
+			<Formik
+				initialValues={authorInitialValues}
+				onSubmit={createAuthor}
+				validationSchema={authorValidationSchema}
+			>
+				<Form>
+					<div className={classes.boxes}>
+						<div className={classes.box}>
+							<AddAuthorSection />
+						</div>
+					</div>
+				</Form>
+			</Formik>
 		</div>
 	);
 }

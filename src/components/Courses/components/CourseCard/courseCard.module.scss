@@ -4,7 +4,7 @@
 	justify-content: start;
 	align-items: flex-start;
 	padding: 20px;
-	border: solid 2px coral;
+	border: solid 2px rgba(255, 127, 80, 0.493);
 	width: 100%;
 
 	.leftInfo {
@@ -20,14 +20,10 @@
 		flex-shrink: 0;
 		flex-basis: 20%;
 		width: 20%;
-	}
 
-	.courseProp{
-		display: block;
-		max-width: 98%;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		&>div{
+			margin: 20px 0;
+		}
 	}
 
 }
