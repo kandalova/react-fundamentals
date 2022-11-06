@@ -23,6 +23,7 @@ export const enum ERRORS {
 	LOGIN = 'Sorry, Sign in is failed. Please try later!',
 	LOGOUT = 'Sorry, Logout is failed. Please try later!',
 	AUTHORS = 'Sorry, Authors is failed. Please try later!',
+	COURSES = 'Sorry, Courses is failed. Please try later!',
 }
 
 export const enum COURSE_CARD {

@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 
-import { CoursesContext } from '../../../api/courses';
 import { Button } from '../../../common/Button/Button';
 import { COURSE_INFO } from '../../../constants/constants';
 import { ICourse } from '../../../helpers/appTypes';
@@ -10,13 +9,14 @@ import { formatDate } from '../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../helpers/getCourseDuration';
 import { getAuthorsArray } from '../../../helpers/getValuesByIDsString';
 import { selectAuthors } from '../../../store/authors/authorsSelector';
+import { selectCourses } from '../../../store/courses/coursesSelector';
 import { CourseProp } from '../components/CourseProp/CourseProp';
 
 import classes from './courseInfo.module.scss';
 
 export function CourseInfo() {
 	const { id } = useParams<{ id: string }>();
-	const courses = useContext(CoursesContext);
+	const courses = useSelector(selectCourses);
 	const authors = useSelector(selectAuthors);
 	const course: ICourse | undefined = courses.find(
 		(course) => course.id === id

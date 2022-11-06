@@ -55,7 +55,6 @@ export async function getMe(token: string): Promise<IUserPayload> {
 		},
 	});
 	const info = await response.json();
-	console.log(info);
 	if (!response.ok || !info.successful) {
 		const error: string = info.errors
 			? info.errors[0]

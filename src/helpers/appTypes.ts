@@ -1,12 +1,3 @@
-export interface ICourse {
-	id: string;
-	title: string;
-	description: string;
-	creationDate: string;
-	duration: number;
-	authors: Array<string>;
-}
-
 export interface IAuthor {
 	id: string;
 	name: string;
@@ -38,9 +29,20 @@ export interface IUserPayload {
 	token: string;
 }
 
-export interface ICreateCourseData {
+export interface ICoursePayload {
 	title: string;
 	description: string;
 	duration: number | string;
-	courseAuthors: Array<string>;
+	// authors: Array<string>;
 }
+
+export interface ICourse {
+	id: string;
+	title: string;
+	description: string;
+	creationDate: string;
+	duration: number;
+	authors: Array<string>;
+}
+
+export type INewCourse = Omit<ICourse, 'id'>;

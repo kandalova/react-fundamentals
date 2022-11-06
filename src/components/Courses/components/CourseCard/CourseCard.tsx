@@ -1,6 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 import { Button } from '../../../../common/Button/Button';
 import { COURSE_CARD } from '../../../../constants/constants';
@@ -12,6 +13,7 @@ import { selectAuthors } from '../../../../store/authors/authorsSelector';
 import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
+import { courseDeleted } from '../../../../store/courses/coursesActions';
 
 interface ICourseCard {
 	course: ICourse;
@@ -19,6 +21,7 @@ interface ICourseCard {
 
 export function CourseCard({ course }: ICourseCard) {
 	const authors = useSelector(selectAuthors);
+	const dispatch = useDispatch();
 
 	return (
 		<div className={classes.card}>
@@ -39,9 +42,20 @@ export function CourseCard({ course }: ICourseCard) {
 					prop={COURSE_CARD.CREATED}
 					value={formatDate(course.creationDate, '.')}
 				/>
-				<Link to={`/courses/${course.id}`}>
-					<Button text={COURSE_CARD.BUTTON} />
-				</Link>
+				<div className={classes.buttonBar}>
+					<Link to={`/courses/${course.id}`}>
+						<Button text={COURSE_CARD.BUTTON} />
+					</Link>
+					<div className={classes.icon}>
+						<AiFillEdit />
+					</div>
+					<div
+						className={classes.icon}
+						onClick={() => dispatch(courseDeleted(course.id))}
+					>
+						<AiFillDelete />
+					</div>
+				</div>
 			</div>
 		</div>
 	);

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { selectAuthors } from '../../store/authors/authorsSelector';
 import { addAuthor } from '../../api/authors';
@@ -15,35 +16,34 @@ import {
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
 import { DurationSection } from './components/DurationSection/DurationSection';
 import { AuthorListSection } from './components/AuthorsListSection/AuthorsListSection';
-import { IAuthor, IAuthorPayload, ICourse } from '../../helpers/appTypes';
+import {
+	IAuthor,
+	IAuthorPayload,
+	ICourse,
+	ICoursePayload,
+} from '../../helpers/appTypes';
 import {
 	getAvailableList,
 	getReservedList,
 	getValidatedData,
 } from '../../helpers/createCourseHelper';
+import { addCourse } from '../../api/courses';
+import { courseAdded } from '../../store/courses/coursesActions';
 
 import classes from './creareCourse.module.scss';
 
-interface ICreateCourse {
-	createCourse: (course: Omit<ICourse, 'id'>) => void;
-}
-
-export interface ICreateCoursePayload {
-	title: string;
-	description: string;
-	duration: string | number;
-}
-
-const initialValues: ICreateCoursePayload = {
+const initialValues: ICoursePayload = {
 	title: '',
 	description: '',
 	duration: '',
+	// authors: [],
 };
 
 const validationSchema = yup.object({
 	title: yup.string().min(2).required(),
 	description: yup.string().min(2).required(),
 	duration: yup.number().min(1).required().positive().integer(),
+	// authors: yup.array().of(yup.string()).min(1),
 });
 
 const authorInitialValues: IAuthorPayload = {
@@ -54,10 +54,11 @@ const authorValidationSchema = yup.object({
 	name: yup.string().min(2).required(),
 });
 
-export function CreateCourse({ createCourse }: ICreateCourse) {
+export function CreateCourse() {
 	const [courseAuthors, setCourseAuthors] = useState<string[]>([]);
-	const authors = useSelector(selectAuthors);
+	const authorsList = useSelector(selectAuthors);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	function deleteAuthorFromCourse(id: string): void {
 		const newCourseAuthors = courseAuthors.filter((item) => item !== id);
@@ -74,29 +75,28 @@ export function CreateCourse({ createCourse }: ICreateCourse) {
 		});
 	}
 
-	function onCreateCourseSubmit({
-		title,
-		description,
-		duration,
-	}: ICreateCoursePayload) {
-		console.log('parent');
-		const newCourse = getValidatedData({
-			title,
-			description,
-			duration,
-			courseAuthors,
-		});
-		if (newCourse) createCourse(newCourse);
+	function onCreateCourseSubmit(
+		values: ICoursePayload,
+		{ resetForm }: FormikHelpers<ICoursePayload>
+	) {
+		const newCourse = getValidatedData(values, courseAuthors);
+		if (newCourse) {
+			addCourse(newCourse).then((course: ICourse) => {
+				dispatch(courseAdded(course));
+				resetForm();
+				navigate('/courses');
+			});
+		}
 	}
 
 	const memoizedAvailableAuthors = useMemo(
-		() => getAvailableList(courseAuthors, authors),
-		[courseAuthors, authors]
+		() => getAvailableList(courseAuthors, authorsList),
+		[courseAuthors, authorsList]
 	);
 
 	const memoizedReservedAuthors = useMemo(
-		() => getReservedList(courseAuthors, authors),
-		[courseAuthors, authors]
+		() => getReservedList(courseAuthors, authorsList),
+		[courseAuthors, authorsList]
 	);
 
 	return (

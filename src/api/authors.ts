@@ -24,7 +24,6 @@ export async function getAuthors(): Promise<Array<IAuthor>> {
 		},
 	});
 	const info = await response.json();
-	console.log(info);
 	if (response.ok && info.result) {
 		return info.result as Array<IAuthor>;
 	}
@@ -42,7 +41,6 @@ export async function addAuthor(author: IAuthorPayload): Promise<IAuthor> {
 	// 	},
 	// });
 	// const info = await response.json();
-	// console.log(info);
 	// if (response.ok && info.result) {
 	// 	return info.result as IAuthor;
 	// }

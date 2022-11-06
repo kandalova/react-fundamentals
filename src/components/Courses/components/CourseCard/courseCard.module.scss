@@ -26,4 +26,24 @@
 		}
 	}
 
+	.buttonBar{
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		flex-wrap: wrap;
+		.icon{
+			display: flex;
+			padding: 10px;
+			justify-content: center;
+			background-color: rgba(59, 57, 57, 0.559);
+			color: white;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-left: 10px;
+		}
+		.icon:hover{
+			background-color: coral;
+		}
+	}
+
 }
