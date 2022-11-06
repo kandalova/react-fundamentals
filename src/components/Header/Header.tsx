@@ -1,41 +1,36 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/user';
-import { UserContext } from '../../AppWrapper';
+
 import { Button } from '../../common/Button/Button';
 import { HEADER } from '../../constants/constants';
+import { userLogouted } from '../../store/user/userActions';
+import { selectUser } from '../../store/user/userSelector';
 import { Logo } from './components/Logo';
 
 import classes from './header.module.scss';
 
-const loginPaths = ['/login', '/registration'];
-
 export function Header() {
-	const [isLogined, setIsLogined] = useState<boolean>(false);
-	const { user, setUser } = useContext(UserContext);
 	const navigate = useNavigate();
-	const location = useLocation();
+	const user = useSelector(selectUser);
+	const dispatch = useDispatch();
 
 	function onLoginClick(): void {
-		if (user) {
-			signOut().then(setUser);
-		}
-		navigate('/login');
+		signOut(user.token).then(() => {
+			dispatch(userLogouted());
+			navigate('/login');
+		});
 	}
-
-	useEffect(() => {
-		setIsLogined(!loginPaths.includes(location.pathname));
-	}, [location]);
 
 	return (
 		<div className={classes.header}>
 			<Logo />
-			{isLogined && (
+			{user.isAuth && (
 				<div className={classes.userInfo}>
-					{user && <p>{user.name}</p>}
+					{user.isAuth && <p>{user.name}</p>}
 					<Button
-						text={user ? HEADER.LOGOUT : HEADER.LOGIN}
+						text={user.isAuth ? HEADER.LOGOUT : HEADER.LOGIN}
 						onClick={onLoginClick}
 					/>
 				</div>

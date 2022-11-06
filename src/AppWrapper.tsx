@@ -1,17 +1,16 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
 import App from './App';
-import { createUserContext } from './context/UserContext';
-import { IUser } from './helpers/appTypes';
+import { createStore } from './store';
 
-const [UserCtx, UserContextProvider] = createUserContext<IUser | null>(null);
-export const UserContext = UserCtx;
+const store = createStore();
 
 function AppWrapper() {
 	return (
-		<UserContextProvider>
+		<Provider store={store}>
 			<App />
-		</UserContextProvider>
+		</Provider>
 	);
 }
 

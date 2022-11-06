@@ -1,8 +1,8 @@
 import { ERRORS } from '../constants/constants';
-import { ISignIn, ISignUp, IUser } from '../helpers/appTypes';
+import { ISignIn, ISignUp, IUserPayload } from '../helpers/appTypes';
+
 const tokenKey = 'token';
-const userKey = 'user';
-const tokenDefaultValue = null;
+const tokenDefaultValue = '';
 
 export const userDefaultValue = null;
 
@@ -23,7 +23,7 @@ export async function signUp(user: ISignUp) {
 	}
 }
 
-export async function signIn(user: ISignIn): Promise<IUser> {
+export async function signIn(user: ISignIn): Promise<IUserPayload> {
 	const response = await fetch('http://localhost:4000/login', {
 		method: 'POST',
 		body: JSON.stringify(user),
@@ -32,6 +32,7 @@ export async function signIn(user: ISignIn): Promise<IUser> {
 		},
 	});
 	const info = await response.json();
+
 	if (!response.ok || !info.successful) {
 		const error: string = info.errors
 			? info.errors[0]
@@ -39,31 +40,56 @@ export async function signIn(user: ISignIn): Promise<IUser> {
 		throw new Error(error);
 	}
 	if (info.result && info.user) {
-		await saveToken(info.result);
-		return info.user;
+		await setToken(info.result);
+		return { ...info.user, token: info.result };
 	}
 	throw new Error(ERRORS.LOGIN);
 }
 
-export async function signOut(): Promise<null> {
-	localStorage.removeItem(tokenKey);
-	localStorage.removeItem(userKey);
-	return null;
+export async function getMe(token: string): Promise<IUserPayload> {
+	const response = await fetch('http://localhost:4000/users/me', {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: token,
+		},
+	});
+	const info = await response.json();
+	console.log(info);
+	if (!response.ok || !info.successful) {
+		const error: string = info.errors
+			? info.errors[0]
+			: info.result || ERRORS.LOGIN;
+		throw new Error(error);
+	}
+	if (info.result) {
+		return { ...info.result, token };
+	}
+	throw new Error(ERRORS.LOGIN);
 }
 
-export async function saveUser(user: IUser): Promise<IUser> {
-	localStorage.setItem(userKey, JSON.stringify(user));
-	return user;
+export async function signOut(token: string) {
+	const response = await fetch('http://localhost:4000/logout', {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: token,
+		},
+	});
+	if (!response.ok) {
+		throw new Error(ERRORS.LOGOUT);
+	}
+	removeToken();
 }
 
-export async function saveToken(
+export async function setToken(
 	userToken: string | null
 ): Promise<string | null> {
 	localStorage.setItem(tokenKey, JSON.stringify(userToken));
 	return userToken;
 }
 
-export async function getToken(): Promise<string | null> {
+export async function getToken(): Promise<string> {
 	const content = localStorage.getItem(tokenKey);
 	if (!content) {
 		return tokenDefaultValue;
@@ -72,11 +98,6 @@ export async function getToken(): Promise<string | null> {
 	return JSON.parse(content);
 }
 
-export async function getUser(): Promise<IUser | null> {
-	const content = localStorage.getItem(userKey);
-	if (!content) {
-		return userDefaultValue;
-	}
-
-	return JSON.parse(content);
+export function removeToken() {
+	localStorage.removeItem(tokenKey);
 }

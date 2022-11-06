@@ -23,9 +23,17 @@ export interface ISignIn {
 	email: string;
 }
 
-export interface IUser {
+export interface IUserInfo {
+	isAuth: boolean;
 	name: string;
 	email: string;
+	token: string;
+}
+
+export interface IUserPayload {
+	name: string;
+	email: string;
+	token: string;
 }
 
 export interface ICreateCourseData {
