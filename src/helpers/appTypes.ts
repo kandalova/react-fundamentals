@@ -12,6 +12,8 @@ export interface IAuthor {
 	name: string;
 }
 
+export type IAuthorPayload = Omit<IAuthor, 'id'>;
+
 export interface ISignUp {
 	name: string;
 	password: string;

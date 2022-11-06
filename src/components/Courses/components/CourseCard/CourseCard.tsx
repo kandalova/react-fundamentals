@@ -1,13 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { AuthorsContext } from '../../../../api/authors';
 import { Button } from '../../../../common/Button/Button';
 import { COURSE_CARD } from '../../../../constants/constants';
 import { ICourse } from '../../../../helpers/appTypes';
 import { formatDate } from '../../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../../helpers/getCourseDuration';
 import { getAuthorsString } from '../../../../helpers/getValuesByIDsString';
+import { selectAuthors } from '../../../../store/authors/authorsSelector';
 import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
@@ -17,7 +18,7 @@ interface ICourseCard {
 }
 
 export function CourseCard({ course }: ICourseCard) {
-	const authors = useContext(AuthorsContext);
+	const authors = useSelector(selectAuthors);
 
 	return (
 		<div className={classes.card}>

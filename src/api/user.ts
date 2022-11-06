@@ -7,7 +7,7 @@ const tokenDefaultValue = '';
 export const userDefaultValue = null;
 
 export async function signUp(user: ISignUp) {
-	const response = await fetch('http://localhost:4000/register', {
+	const response = await fetch(process.env.REACT_APP_API_KEY + 'register', {
 		method: 'POST',
 		body: JSON.stringify(user),
 		headers: {
@@ -24,7 +24,7 @@ export async function signUp(user: ISignUp) {
 }
 
 export async function signIn(user: ISignIn): Promise<IUserPayload> {
-	const response = await fetch('http://localhost:4000/login', {
+	const response = await fetch(process.env.REACT_APP_API_KEY + 'login', {
 		method: 'POST',
 		body: JSON.stringify(user),
 		headers: {
@@ -47,7 +47,7 @@ export async function signIn(user: ISignIn): Promise<IUserPayload> {
 }
 
 export async function getMe(token: string): Promise<IUserPayload> {
-	const response = await fetch('http://localhost:4000/users/me', {
+	const response = await fetch(process.env.REACT_APP_API_KEY + 'users/me', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export async function getMe(token: string): Promise<IUserPayload> {
 }
 
 export async function signOut(token: string) {
-	const response = await fetch('http://localhost:4000/logout', {
+	const response = await fetch(process.env.REACT_APP_API_KEY + 'logout', {
 		method: 'DELETE',
 		headers: {
 			'Content-Type': 'application/json',
