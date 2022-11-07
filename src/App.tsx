@@ -10,15 +10,11 @@ import { Courses } from './components/Courses/Courses';
 import { CourseInfo } from './components/Courses/CourseInfo/CourseInfo';
 
 import { getMe, getToken } from './api/user';
-import { getCourses } from './api/courses';
 
 import classes from './app.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from './store/user/userSelector';
 import { userLogined } from './store/user/userActions';
-import { authorsLoaded } from './store/authors/authorsActions';
-import { getAuthors } from './api/authors';
-import { coursesLoaded } from './store/courses/coursesActions';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
@@ -41,11 +37,6 @@ function App() {
 			.finally(() => {
 				setLoading(false);
 			});
-
-		getCourses().then((courses) => dispatch(coursesLoaded(courses)));
-		getAuthors().then((authors) => {
-			dispatch(authorsLoaded(authors));
-		});
 	}, []);
 
 	return (
