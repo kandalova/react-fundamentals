@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
@@ -19,22 +19,28 @@ import { userLogined } from './store/user/userActions';
 import { authorsLoaded } from './store/authors/authorsActions';
 import { getAuthors } from './api/authors';
 import { coursesLoaded } from './store/courses/coursesActions';
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
-	const navigate = useNavigate();
 	const token = useSelector(selectToken);
 	const dispatch = useDispatch();
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		getToken().then((token) => {
-			if (!token) {
-				navigate('/login');
-			} else {
-				getMe(token).then((payload: IUserPayload) =>
-					dispatch(userLogined(payload))
-				);
-			}
-		});
+		setLoading(true);
+		getToken()
+			.then((token) => {
+				if (token) {
+					return getMe(token);
+				}
+				throw new Error('Cannot log in');
+			})
+			.then((payload: IUserPayload) => {
+				dispatch(userLogined(payload));
+			})
+			.finally(() => {
+				setLoading(false);
+			});
 
 		getCourses().then((courses) => dispatch(coursesLoaded(courses)));
 		getAuthors().then((authors) => {
@@ -45,27 +51,28 @@ function App() {
 	return (
 		<div className={classes.app}>
 			<Header />
-			<Routes>
-				{!token && (
-					<>
+			{!loading && (
+				<Routes>
+					<Route
+						element={
+							<ProtectedRoute isAllowed={!token} redirectPath='/courses' />
+						}
+					>
 						<Route path={'/registration'} element={<Registration />} />
 						<Route path={'/login'} element={<Login />} />
-					</>
-				)}
-				{token && (
-					<>
+					</Route>
+					<Route
+						element={
+							<ProtectedRoute isAllowed={!!token} redirectPath='/login' />
+						}
+					>
 						<Route path={'/courses'} element={<Courses />} />
 						<Route path='/courses/:id' element={<CourseInfo />} />
 						<Route path={'/courses/add'} element={<CreateCourse />} />
-					</>
-				)}
-				<Route
-					path='*'
-					element={
-						token ? <Navigate to='/courses' /> : <Navigate to='/login' />
-					}
-				/>
-			</Routes>
+					</Route>
+					<Route path='*' element={<Navigate to='/courses' />} />
+				</Routes>
+			)}
 		</div>
 	);
 }
