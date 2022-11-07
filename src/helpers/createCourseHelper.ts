@@ -5,10 +5,12 @@ export function isValidCourseData(authors: Array<string>): boolean {
 	return authors.length > 0;
 }
 
-export function getCourse(
-	{ title, description, duration }: ICoursePayload,
-	authors: Array<string>
-): INewCourse {
+export function getCourse({
+	title,
+	description,
+	duration,
+	authors,
+}: ICoursePayload): INewCourse {
 	const creationDate = new Date().toLocaleString();
 	return {
 		title,
@@ -17,17 +19,6 @@ export function getCourse(
 		duration: Number(duration),
 		creationDate,
 	};
-}
-
-export function getValidatedData(
-	course: ICoursePayload,
-	authors: Array<string>
-): INewCourse | null {
-	if (isValidCourseData(authors)) {
-		return getCourse(course, authors);
-	}
-	alert(ERRORS.NEW_COURSE);
-	return null;
 }
 
 export function getAvailableList(

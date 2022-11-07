@@ -32,5 +32,20 @@
 			margin: 20px auto;
 			width: fit-content;
 		}
+
+		.hide{
+			visibility: hidden;
+			height: 50px;
+
+		}
+	
+		.show{
+			color: red;
+			visibility: visible;
+			height: 50px;
+			display: flex;
+			justify-content: center;
+		}
 	}
+
 }

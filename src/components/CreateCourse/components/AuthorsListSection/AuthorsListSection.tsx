@@ -5,30 +5,34 @@ import { AuthorItem } from '../AuthorItem/AuthorItem';
 
 interface IAuthorListSection {
 	title: string;
-	authors: Array<IAuthor>;
+	authorList: Array<IAuthor>;
 	onClick?: (id: string) => void;
 	buttonText: string;
+	value: Array<IAuthor['id']>;
 }
 
 export function AuthorListSection({
 	title,
-	authors,
+	authorList,
 	onClick,
 	buttonText,
+	value,
 }: IAuthorListSection) {
 	return (
 		<div>
 			<h1>{title}</h1>
-			{authors.map((item) => {
-				return (
-					<AuthorItem
-						author={item}
-						key={item.id}
-						buttonText={buttonText}
-						onClick={onClick}
-					/>
-				);
-			})}
+			{authorList
+				.filter((author) => value.includes(author.id))
+				.map((item) => {
+					return (
+						<AuthorItem
+							author={item}
+							key={item.id}
+							buttonText={buttonText}
+							onClick={onClick}
+						/>
+					);
+				})}
 		</div>
 	);
 }

@@ -33,7 +33,7 @@ export interface ICoursePayload {
 	title: string;
 	description: string;
 	duration: number | string;
-	// authors: Array<string>;
+	authors: Array<string>;
 }
 
 export interface ICourse {
