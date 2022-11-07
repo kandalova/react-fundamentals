@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { signOut } from '../../api/user';
 
 import { Button } from '../../common/Button/Button';
@@ -17,7 +17,7 @@ export function Header() {
 	const dispatch = useDispatch();
 
 	function onLoginClick(): void {
-		signOut(user.token).then(() => {
+		signOut().then(() => {
 			dispatch(userLogouted());
 			navigate('/login');
 		});
@@ -25,7 +25,9 @@ export function Header() {
 
 	return (
 		<div className={classes.header}>
-			<Logo />
+			<Link to={'/'}>
+				<Logo />
+			</Link>
 			{user.isAuth && (
 				<div className={classes.userInfo}>
 					{user.isAuth && <p>{user.name}</p>}

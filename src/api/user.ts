@@ -7,12 +7,11 @@ const tokenDefaultValue = '';
 export const userDefaultValue = null;
 
 export async function signUp(user: ISignUp) {
+	const headers = getHeaders();
 	const response = await fetch(process.env.REACT_APP_API_KEY + 'register', {
 		method: 'POST',
 		body: JSON.stringify(user),
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers,
 	});
 	const info = await response.json();
 	if (!response.ok || !info.successful) {
@@ -24,12 +23,11 @@ export async function signUp(user: ISignUp) {
 }
 
 export async function signIn(user: ISignIn): Promise<IUserPayload> {
+	const headers = getHeaders();
 	const response = await fetch(process.env.REACT_APP_API_KEY + 'login', {
 		method: 'POST',
 		body: JSON.stringify(user),
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers,
 	});
 	const info = await response.json();
 
@@ -67,13 +65,11 @@ export async function getMe(token: string): Promise<IUserPayload> {
 	throw new Error(ERRORS.LOGIN);
 }
 
-export async function signOut(token: string) {
+export async function signOut() {
+	const headers = await getAuthHeaders();
 	const response = await fetch(process.env.REACT_APP_API_KEY + 'logout', {
 		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: token,
-		},
+		headers,
 	});
 	if (!response.ok) {
 		throw new Error(ERRORS.LOGOUT);
@@ -99,4 +95,18 @@ export async function getToken(): Promise<string> {
 
 export function removeToken() {
 	localStorage.removeItem(tokenKey);
+}
+
+export async function getAuthHeaders() {
+	const token = await getToken();
+	return {
+		'Content-Type': 'application/json',
+		Authorization: token,
+	};
+}
+
+export function getHeaders() {
+	return {
+		'Content-Type': 'application/json',
+	};
 }

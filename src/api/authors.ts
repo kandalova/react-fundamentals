@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ERRORS } from '../constants/constants';
 import { mockedAuthorsList } from '../constants/MockedCourses';
 import { IAuthor, IAuthorPayload } from '../helpers/appTypes';
+import { getAuthHeaders, getHeaders, getToken } from './user';
 
 // export const AuthorsContext = createContext<Array<IAuthor>>([]);
 const localStorageKey = 'authors';
@@ -17,11 +18,10 @@ export async function getAuthorsOld(): Promise<Array<IAuthor>> {
 }
 
 export async function getAuthors(): Promise<Array<IAuthor>> {
+	const headers = getHeaders();
 	const response = await fetch(process.env.REACT_APP_API_KEY + 'authors/all', {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers,
 	});
 	const info = await response.json();
 	if (response.ok && info.result) {
@@ -31,20 +31,17 @@ export async function getAuthors(): Promise<Array<IAuthor>> {
 }
 
 export async function addAuthor(author: IAuthorPayload): Promise<IAuthor> {
-	const id = await uuidv4();
-	return { ...author, id };
-	// const response = await fetch(process.env.REACT_APP_API_KEY + 'authors/add', {
-	// 	method: 'POST',
-	// 	body: JSON.stringify(author),
-	// 	headers: {
-	// 		'Content-Type': 'application/json',
-	// 	},
-	// });
-	// const info = await response.json();
-	// if (response.ok && info.result) {
-	// 	return info.result as IAuthor;
-	// }
-	// throw new Error(ERRORS.AUTHORS);
+	const headers = await getAuthHeaders();
+	const response = await fetch(process.env.REACT_APP_API_KEY + 'authors/add', {
+		method: 'POST',
+		body: JSON.stringify(author),
+		headers,
+	});
+	const info = await response.json();
+	if (response.ok && info.result) {
+		return info.result as IAuthor;
+	}
+	throw new Error(ERRORS.AUTHORS);
 }
 
 export async function saveAuthors(

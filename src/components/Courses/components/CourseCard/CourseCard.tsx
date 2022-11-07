@@ -14,6 +14,7 @@ import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
 import { courseDeleted } from '../../../../store/courses/coursesActions';
+import { deleteCourse } from '../../../../api/courses';
 
 interface ICourseCard {
 	course: ICourse;
@@ -22,6 +23,13 @@ interface ICourseCard {
 export function CourseCard({ course }: ICourseCard) {
 	const authors = useSelector(selectAuthors);
 	const dispatch = useDispatch();
+
+	function onDeleteCourseSubmit(id: string) {
+		console.log(id);
+		deleteCourse(id).then(() => {
+			dispatch(courseDeleted(id));
+		});
+	}
 
 	return (
 		<div className={classes.card}>
@@ -51,7 +59,7 @@ export function CourseCard({ course }: ICourseCard) {
 					</div>
 					<div
 						className={classes.icon}
-						onClick={() => dispatch(courseDeleted(course.id))}
+						onClick={() => onDeleteCourseSubmit(course.id)}
 					>
 						<AiFillDelete />
 					</div>
