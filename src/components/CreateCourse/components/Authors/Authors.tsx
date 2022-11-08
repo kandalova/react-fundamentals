@@ -15,6 +15,7 @@ interface IAuthorsProps {
 export function Authors({ name }: IAuthorsProps) {
 	const authorsList = useSelector(selectAuthors);
 	const [{ value, onChange }, meta] = useField<Array<string>>(name);
+	const hasError = meta.touched && meta.error;
 
 	console.log(meta);
 	const onCourseAuthorAdd = (updatedId: string) => {
@@ -58,7 +59,7 @@ export function Authors({ name }: IAuthorsProps) {
 					authorList={authorsList}
 					onClick={onCourseAuthorRemove}
 				/>
-				<div className={meta.error ? classes.show : classes.hide}>
+				<div className={hasError ? classes.show : classes.hide}>
 					{meta.error}
 				</div>
 			</div>

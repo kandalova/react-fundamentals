@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { addAuthor } from '../../api/authors';
-import { authorAdded } from '../../store/authors/authorsActions';
+import { addAuthor, getAuthors } from '../../api/authors';
+import { authorAdded, authorsLoaded } from '../../store/authors/authorsActions';
 import { Title } from './components/Title/Title';
 import { TextArea } from '../../common/TextArea/TextArea';
 import { CREATE_COURSE } from '../../constants/constants';
@@ -49,6 +49,16 @@ const authorValidationSchema = yup.object({
 export function CreateCourse() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		setLoading(true);
+		getAuthors()
+			.then((authors) => dispatch(authorsLoaded(authors)))
+			.finally(() => {
+				setLoading(false);
+			});
+	}, []);
 
 	function onCreateAuthorSubmit(
 		values: IAuthorPayload,
@@ -92,7 +102,7 @@ export function CreateCourse() {
 							<DurationSection id='duration' />
 						</div>
 					</div>
-					<Authors name='authors' />
+					{!loading && <Authors name='authors' />}
 				</Form>
 			</Formik>
 			<Formik
