@@ -24,10 +24,11 @@ export function Courses() {
 
 	useEffect(() => {
 		setLoading(true);
-		getCourses()
-			.then((courses) => dispatch(coursesLoaded(courses)))
-			.then(() => getAuthors())
-			.then((authors) => dispatch(authorsLoaded(authors)))
+		Promise.all([getCourses(), getAuthors()])
+			.then(([courses, authors]) => {
+				dispatch(coursesLoaded(courses));
+				dispatch(authorsLoaded(authors));
+			})
 			.finally(() => {
 				setLoading(false);
 			});
