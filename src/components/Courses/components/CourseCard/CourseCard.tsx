@@ -8,8 +8,7 @@ import { COURSE_CARD } from '../../../../constants/constants';
 import { ICourse } from '../../../../helpers/appTypes';
 import { formatDate } from '../../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../../helpers/getCourseDuration';
-import { getAuthorsString } from '../../../../helpers/getValuesByIDsString';
-import { selectAuthors } from '../../../../store/authors/authorsSelector';
+import { selectAuthorNamesStringById } from '../../../../store/authors/authorsSelector';
 import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
@@ -21,7 +20,9 @@ interface ICourseCard {
 }
 
 export function CourseCard({ course }: ICourseCard) {
-	const authors = useSelector(selectAuthors);
+	const authors = course
+		? useSelector(selectAuthorNamesStringById(course.authors))
+		: '';
 	const dispatch = useDispatch();
 
 	function onDeleteCourseSubmit(id: string) {
@@ -37,10 +38,7 @@ export function CourseCard({ course }: ICourseCard) {
 				<p>{course.description}</p>
 			</div>
 			<div className={classes.rightInfo}>
-				<CourseProp
-					prop={COURSE_CARD.AUTHORS}
-					value={getAuthorsString(course.authors, authors)}
-				/>
+				<CourseProp prop={COURSE_CARD.AUTHORS} value={authors} />
 				<CourseProp
 					prop={COURSE_CARD.DURATION}
 					value={formatDuration(course.duration)}

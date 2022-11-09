@@ -4,23 +4,18 @@ import { Link, useParams } from 'react-router-dom';
 
 import { Button } from '../../../common/Button/Button';
 import { COURSE_INFO } from '../../../constants/constants';
-import { ICourse } from '../../../helpers/appTypes';
 import { formatDate } from '../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../helpers/getCourseDuration';
-import { getAuthorsArray } from '../../../helpers/getValuesByIDsString';
-import { selectAuthors } from '../../../store/authors/authorsSelector';
-import { selectCourses } from '../../../store/courses/coursesSelector';
+import { selectAuthorsById } from '../../../store/authors/authorsSelector';
+import { selectCourseById } from '../../../store/courses/coursesSelector';
 import { CourseProp } from '../components/CourseProp/CourseProp';
 
 import classes from './courseInfo.module.scss';
 
 export function CourseInfo() {
 	const { id } = useParams<{ id: string }>();
-	const courses = useSelector(selectCourses);
-	const authors = useSelector(selectAuthors);
-	const course: ICourse | undefined = courses.find(
-		(course) => course.id === id
-	);
+	const course = useSelector(selectCourseById(id || ''));
+	const authors = course ? useSelector(selectAuthorsById(course.authors)) : [];
 	return (
 		<div className={classes.container}>
 			<Link to='/courses'>
@@ -41,10 +36,7 @@ export function CourseInfo() {
 								prop={COURSE_INFO.CREATED}
 								value={formatDate(course.creationDate, '/')}
 							/>
-							<CourseProp
-								prop={COURSE_INFO.AUTHORS}
-								value={getAuthorsArray(course.authors, authors)}
-							/>
+							<CourseProp prop={COURSE_INFO.AUTHORS} value={authors} />
 						</div>
 					</div>
 				</>
