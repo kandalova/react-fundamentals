@@ -1,5 +1,6 @@
 import { ERRORS } from '../constants/constants';
 import { ISignIn, ISignUp, IUserPayload } from '../helpers/appTypes';
+import { getAuthHeaders, getHeaders } from './headers';
 
 const tokenKey = 'token';
 const tokenDefaultValue = '';
@@ -8,7 +9,7 @@ export const userDefaultValue = null;
 
 export async function signUp(user: ISignUp) {
 	const headers = getHeaders();
-	const response = await fetch(process.env.REACT_APP_API_KEY + 'register', {
+	const response = await fetch(`${process.env.REACT_APP_API_URL}register`, {
 		method: 'POST',
 		body: JSON.stringify(user),
 		headers,
@@ -24,7 +25,7 @@ export async function signUp(user: ISignUp) {
 
 export async function signIn(user: ISignIn): Promise<IUserPayload> {
 	const headers = getHeaders();
-	const response = await fetch(process.env.REACT_APP_API_KEY + 'login', {
+	const response = await fetch(`${process.env.REACT_APP_API_URL}login`, {
 		method: 'POST',
 		body: JSON.stringify(user),
 		headers,
@@ -45,12 +46,10 @@ export async function signIn(user: ISignIn): Promise<IUserPayload> {
 }
 
 export async function getMe(token: string): Promise<IUserPayload> {
-	const response = await fetch(process.env.REACT_APP_API_KEY + 'users/me', {
+	const headers = await getAuthHeaders(token);
+	const response = await fetch(`${process.env.REACT_APP_API_URL}users/me`, {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: token,
-		},
+		headers: headers,
 	});
 	const info = await response.json();
 	if (!response.ok || !info.successful) {
@@ -67,13 +66,10 @@ export async function getMe(token: string): Promise<IUserPayload> {
 
 export async function signOut() {
 	const headers = await getAuthHeaders();
-	const response = await fetch(process.env.REACT_APP_API_KEY + 'logout', {
+	await fetch(`${process.env.REACT_APP_API_URL}logout`, {
 		method: 'DELETE',
 		headers,
 	});
-	if (!response.ok) {
-		throw new Error(ERRORS.LOGOUT);
-	}
 	removeToken();
 }
 
@@ -95,18 +91,4 @@ export async function getToken(): Promise<string> {
 
 export function removeToken() {
 	localStorage.removeItem(tokenKey);
-}
-
-export async function getAuthHeaders() {
-	const token = await getToken();
-	return {
-		'Content-Type': 'application/json',
-		Authorization: token,
-	};
-}
-
-export function getHeaders() {
-	return {
-		'Content-Type': 'application/json',
-	};
 }

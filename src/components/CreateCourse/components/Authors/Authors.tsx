@@ -17,7 +17,6 @@ export function Authors({ name }: IAuthorsProps) {
 	const [{ value, onChange }, meta] = useField<Array<string>>(name);
 	const hasError = meta.touched && meta.error;
 
-	console.log(meta);
 	const onCourseAuthorAdd = (updatedId: string) => {
 		onChange({
 			target: {

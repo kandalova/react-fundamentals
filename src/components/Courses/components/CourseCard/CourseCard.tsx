@@ -25,7 +25,6 @@ export function CourseCard({ course }: ICourseCard) {
 	const dispatch = useDispatch();
 
 	function onDeleteCourseSubmit(id: string) {
-		console.log(id);
 		deleteCourse(id).then(() => {
 			dispatch(courseDeleted(id));
 		});
