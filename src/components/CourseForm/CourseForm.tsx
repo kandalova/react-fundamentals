@@ -22,7 +22,7 @@ import { addCourse } from '../../api/courses';
 import { courseAdded } from '../../store/courses/coursesActions';
 import { Authors } from './components/Authors/Authors';
 
-import classes from './creareCourse.module.scss';
+import classes from './courseForm.module.scss';
 
 const initialValues: ICoursePayload = {
 	title: '',
@@ -46,7 +46,7 @@ const authorValidationSchema = yup.object({
 	name: yup.string().min(2).required(),
 });
 
-export function CreateCourse() {
+export function CourseForm() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);

@@ -4,7 +4,7 @@ import { Button } from '../../../../common/Button/Button';
 import { Input } from '../../../../common/Input/Input';
 import { CREATE_COURSE_AUTHORS } from '../../../../constants/constants';
 
-import classes from './../../creareCourse.module.scss';
+import classes from './../../courseForm.module.scss';
 
 export function AddAuthorSection() {
 	return (

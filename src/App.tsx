@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
-import { CreateCourse } from './components/CreateCourse/CreateCourse';
+
 import { IUserPayload } from './helpers/appTypes';
 import { Registration } from './components/Registration/Registration';
 import { Login } from './components/Login/Login';
@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from './store/user/userSelector';
 import { userLogined } from './store/user/userActions';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { CourseForm } from './components/CourseForm/CourseForm';
 
 function App() {
 	const token = useSelector(selectToken);
@@ -59,7 +60,7 @@ function App() {
 					>
 						<Route path={'/courses'} element={<Courses />} />
 						<Route path='/courses/:id' element={<CourseInfo />} />
-						<Route path={'/courses/add'} element={<CreateCourse />} />
+						<Route path={'/courses/add'} element={<CourseForm />} />
 					</Route>
 					<Route path='*' element={<Navigate to='/courses' />} />
 				</Routes>
