@@ -20,9 +20,9 @@ interface ICourseCard {
 }
 
 export function CourseCard({ course }: ICourseCard) {
-	const authors = course
-		? useSelector(selectAuthorNamesStringById(course.authors))
-		: '';
+	const authors = useSelector(
+		selectAuthorNamesStringById(course?.authors || [])
+	);
 	const dispatch = useDispatch();
 
 	function onDeleteCourseSubmit(id: string) {

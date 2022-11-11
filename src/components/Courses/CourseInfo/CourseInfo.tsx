@@ -15,7 +15,7 @@ import classes from './courseInfo.module.scss';
 export function CourseInfo() {
 	const { id } = useParams<{ id: string }>();
 	const course = useSelector(selectCourseById(id || ''));
-	const authors = course ? useSelector(selectAuthorsById(course.authors)) : [];
+	const authors = useSelector(selectAuthorsById(course?.authors || []));
 	return (
 		<div className={classes.container}>
 			<Link to='/courses'>
