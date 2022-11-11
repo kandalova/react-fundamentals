@@ -1,73 +1,70 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
 import { CreateCourse } from './components/CreateCourse/CreateCourse';
-import { IAuthor, ICourse } from './helpers/appTypes';
+import { IUserPayload } from './helpers/appTypes';
 import { Registration } from './components/Registration/Registration';
 import { Login } from './components/Login/Login';
 import { Courses } from './components/Courses/Courses';
 import { CourseInfo } from './components/Courses/CourseInfo/CourseInfo';
 
-import { getToken, getUser } from './api/user';
-import { CoursesContext, getCourses, saveCourses } from './api/courses';
-import { AuthorsContext, getAuthors, saveAuthors } from './api/authors';
+import { getMe, getToken } from './api/user';
 
 import classes from './app.module.scss';
-import { UserContext } from './AppWrapper';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectToken } from './store/user/userSelector';
+import { userLogined } from './store/user/userActions';
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
-	const [authors, setAuthors] = useState<IAuthor[]>([]);
-	const [courses, setCourses] = useState<ICourse[]>([]);
-	const navigate = useNavigate();
-	const { setUser } = useContext(UserContext);
-
-	function createAuthor(author: Omit<IAuthor, 'id'>): void {
-		saveAuthors(author).then(setAuthors);
-	}
-	function createCourse(course: Omit<ICourse, 'id'>): void {
-		saveCourses(course)
-			.then(setCourses)
-			.then(() => navigate('/courses'));
-	}
+	const token = useSelector(selectToken);
+	const dispatch = useDispatch();
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		getToken().then((token) => {
-			if (!token) {
-				navigate('/login');
-			} else {
-				getUser().then(setUser);
-			}
-		});
-
-		getCourses().then(setCourses);
-		getAuthors().then(setAuthors);
+		setLoading(true);
+		getToken()
+			.then((token) => {
+				if (token) {
+					return getMe(token);
+				}
+				throw new Error('Cannot log in');
+			})
+			.then((payload: IUserPayload) => {
+				dispatch(userLogined(payload));
+			})
+			.finally(() => {
+				setLoading(false);
+			});
 	}, []);
 
 	return (
-		<CoursesContext.Provider value={courses}>
-			<AuthorsContext.Provider value={authors}>
-				<div className={classes.app}>
-					<Header />
-					<Routes>
+		<div className={classes.app}>
+			<Header />
+			{!loading && (
+				<Routes>
+					<Route
+						element={
+							<ProtectedRoute isAllowed={!token} redirectPath='/courses' />
+						}
+					>
 						<Route path={'/registration'} element={<Registration />} />
 						<Route path={'/login'} element={<Login />} />
+					</Route>
+					<Route
+						element={
+							<ProtectedRoute isAllowed={!!token} redirectPath='/login' />
+						}
+					>
 						<Route path={'/courses'} element={<Courses />} />
 						<Route path='/courses/:id' element={<CourseInfo />} />
-						<Route
-							path={'/courses/add'}
-							element={
-								<CreateCourse
-									createCourse={createCourse}
-									createAuthor={createAuthor}
-								/>
-							}
-						/>
-						<Route path='*' element={<Navigate to='/courses' />} />
-					</Routes>
-				</div>
-			</AuthorsContext.Provider>
-		</CoursesContext.Provider>
+						<Route path={'/courses/add'} element={<CreateCourse />} />
+					</Route>
+					<Route path='*' element={<Navigate to='/courses' />} />
+				</Routes>
+			)}
+		</div>
 	);
 }
 

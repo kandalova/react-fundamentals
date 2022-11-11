@@ -1,18 +1,18 @@
 import { ERRORS } from '../constants/constants';
-import { ISignIn, ISignUp, IUser } from '../helpers/appTypes';
+import { ISignIn, ISignUp, IUserPayload } from '../helpers/appTypes';
+import { getAuthHeaders, getHeaders } from './headers';
+
 const tokenKey = 'token';
-const userKey = 'user';
-const tokenDefaultValue = null;
+const tokenDefaultValue = '';
 
 export const userDefaultValue = null;
 
 export async function signUp(user: ISignUp) {
-	const response = await fetch('http://localhost:4000/register', {
+	const headers = getHeaders();
+	const response = await fetch(`${process.env.REACT_APP_API_URL}register`, {
 		method: 'POST',
 		body: JSON.stringify(user),
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers,
 	});
 	const info = await response.json();
 	if (!response.ok || !info.successful) {
@@ -23,13 +23,33 @@ export async function signUp(user: ISignUp) {
 	}
 }
 
-export async function signIn(user: ISignIn): Promise<IUser> {
-	const response = await fetch('http://localhost:4000/login', {
+export async function signIn(user: ISignIn): Promise<IUserPayload> {
+	const headers = getHeaders();
+	const response = await fetch(`${process.env.REACT_APP_API_URL}login`, {
 		method: 'POST',
 		body: JSON.stringify(user),
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers,
+	});
+	const info = await response.json();
+
+	if (!response.ok || !info.successful) {
+		const error: string = info.errors
+			? info.errors[0]
+			: info.result || ERRORS.LOGIN;
+		throw new Error(error);
+	}
+	if (info.result && info.user) {
+		await setToken(info.result);
+		return { ...info.user, token: info.result };
+	}
+	throw new Error(ERRORS.LOGIN);
+}
+
+export async function getMe(token: string): Promise<IUserPayload> {
+	const headers = await getAuthHeaders(token);
+	const response = await fetch(`${process.env.REACT_APP_API_URL}users/me`, {
+		method: 'GET',
+		headers: headers,
 	});
 	const info = await response.json();
 	if (!response.ok || !info.successful) {
@@ -38,32 +58,29 @@ export async function signIn(user: ISignIn): Promise<IUser> {
 			: info.result || ERRORS.LOGIN;
 		throw new Error(error);
 	}
-	if (info.result && info.user) {
-		await saveToken(info.result);
-		return info.user;
+	if (info.result) {
+		return { ...info.result, token };
 	}
 	throw new Error(ERRORS.LOGIN);
 }
 
-export async function signOut(): Promise<null> {
-	localStorage.removeItem(tokenKey);
-	localStorage.removeItem(userKey);
-	return null;
+export async function signOut() {
+	const headers = await getAuthHeaders();
+	await fetch(`${process.env.REACT_APP_API_URL}logout`, {
+		method: 'DELETE',
+		headers,
+	});
+	removeToken();
 }
 
-export async function saveUser(user: IUser): Promise<IUser> {
-	localStorage.setItem(userKey, JSON.stringify(user));
-	return user;
-}
-
-export async function saveToken(
+export async function setToken(
 	userToken: string | null
 ): Promise<string | null> {
 	localStorage.setItem(tokenKey, JSON.stringify(userToken));
 	return userToken;
 }
 
-export async function getToken(): Promise<string | null> {
+export async function getToken(): Promise<string> {
 	const content = localStorage.getItem(tokenKey);
 	if (!content) {
 		return tokenDefaultValue;
@@ -72,11 +89,6 @@ export async function getToken(): Promise<string | null> {
 	return JSON.parse(content);
 }
 
-export async function getUser(): Promise<IUser | null> {
-	const content = localStorage.getItem(userKey);
-	if (!content) {
-		return userDefaultValue;
-	}
-
-	return JSON.parse(content);
+export function removeToken() {
+	localStorage.removeItem(tokenKey);
 }

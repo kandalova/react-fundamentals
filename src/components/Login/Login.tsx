@@ -1,15 +1,16 @@
 import { Formik, Form } from 'formik';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { saveUser, signIn } from '../../api/user';
-import { UserContext } from '../../AppWrapper';
+import { signIn } from '../../api/user';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { LOGIN } from '../../constants/constants';
-import { ISignIn, IUser } from '../../helpers/appTypes';
+import { ISignIn } from '../../helpers/appTypes';
 import { getErrorString } from '../../helpers/errorTypeHandler';
+import { userLogined } from '../../store/user/userActions';
 
 import classes from './../Registration/registration.module.scss';
 
@@ -25,20 +26,15 @@ const validationSchema = yup.object({
 
 export function Login() {
 	const [error, setError] = useState<string>('');
-	const { setUser } = useContext(UserContext);
 	const navigate = useNavigate();
-
-	function onLoginUser(user: IUser): void {
-		saveUser(user)
-			.then(setUser)
-			.then(() => navigate('/courses'));
-	}
+	const dispatch = useDispatch();
 
 	const onLoginSubmit = async ({ email, password }: ISignIn) => {
 		setError('');
 		try {
-			const loginedUser = await signIn({ email, password });
-			onLoginUser(loginedUser);
+			const loginedUserPayload = await signIn({ email, password });
+			dispatch(userLogined(loginedUserPayload));
+			navigate('/courses');
 		} catch (error: unknown) {
 			const message = getErrorString(error);
 			setError(message);

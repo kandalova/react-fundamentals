@@ -1,16 +1,9 @@
-export interface ICourse {
-	id: string;
-	title: string;
-	description: string;
-	creationDate: string;
-	duration: number;
-	authors: Array<string>;
-}
-
 export interface IAuthor {
 	id: string;
 	name: string;
 }
+
+export type IAuthorPayload = Omit<IAuthor, 'id'>;
 
 export interface ISignUp {
 	name: string;
@@ -23,14 +16,33 @@ export interface ISignIn {
 	email: string;
 }
 
-export interface IUser {
+export interface IUserInfo {
+	isAuth: boolean;
 	name: string;
 	email: string;
+	token: string;
 }
 
-export interface ICreateCourseData {
+export interface IUserPayload {
+	name: string;
+	email: string;
+	token: string;
+}
+
+export interface ICoursePayload {
 	title: string;
 	description: string;
 	duration: number | string;
-	courseAuthors: Array<string>;
+	authors: Array<string>;
 }
+
+export interface ICourse {
+	id: string;
+	title: string;
+	description: string;
+	creationDate: string;
+	duration: number;
+	authors: Array<string>;
+}
+
+export type INewCourse = Omit<ICourse, 'id'>;

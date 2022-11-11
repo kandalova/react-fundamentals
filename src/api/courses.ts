@@ -1,32 +1,45 @@
-import { createContext } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { ERRORS } from '../constants/constants';
 
-import { mockedCoursesList } from '../constants/MockedCourses';
-import { ICourse } from '../helpers/appTypes';
-
-export const CoursesContext = createContext<Array<ICourse>>([]);
-const localStorageKey = 'courses';
+import { ICourse, INewCourse } from '../helpers/appTypes';
+import { getAuthHeaders } from './headers';
 
 export async function getCourses(): Promise<Array<ICourse>> {
-	const content = localStorage.getItem(localStorageKey);
-	if (!content) {
-		return mockedCoursesList;
+	const headers = await getAuthHeaders();
+	const response = await fetch(`${process.env.REACT_APP_API_URL}courses/all`, {
+		method: 'GET',
+		headers,
+	});
+	const info = await response.json();
+	if (response.ok && info.result) {
+		return info.result as Array<ICourse>;
 	}
-
-	return JSON.parse(content);
+	throw new Error(ERRORS.COURSES);
 }
 
-export async function saveCourses(
-	newCourse: Omit<ICourse, 'id'>
-): Promise<Array<ICourse>> {
-	const existingCourses = await getCourses();
-	const id = uuidv4();
-
-	const updatedCourses = existingCourses.concat({
-		...newCourse,
-		id,
+export async function addCourse(course: INewCourse): Promise<ICourse> {
+	const headers = await getAuthHeaders();
+	const response = await fetch(`${process.env.REACT_APP_API_URL}courses/add`, {
+		method: 'POST',
+		body: JSON.stringify(course),
+		headers,
 	});
-	localStorage.setItem(localStorageKey, JSON.stringify(updatedCourses));
+	const info = await response.json();
+	if (response.ok && info.result) {
+		return info.result as ICourse;
+	}
+	throw new Error(ERRORS.COURSES);
+}
 
-	return updatedCourses;
+export async function deleteCourse(id: string) {
+	const headers = await getAuthHeaders();
+	const response = await fetch(
+		`${process.env.REACT_APP_API_URL}courses/${id}`,
+		{
+			method: 'DELETE',
+			headers,
+		}
+	);
+	if (!response.ok) {
+		throw new Error(ERRORS.COURSES);
+	}
 }

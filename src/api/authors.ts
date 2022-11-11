@@ -1,32 +1,30 @@
-import { createContext } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-
-import { mockedAuthorsList } from '../constants/MockedCourses';
-import { IAuthor } from '../helpers/appTypes';
-
-export const AuthorsContext = createContext<Array<IAuthor>>([]);
-const localStorageKey = 'authors';
+import { ERRORS } from '../constants/constants';
+import { IAuthor, IAuthorPayload } from '../helpers/appTypes';
+import { getAuthHeaders, getHeaders } from './headers';
 
 export async function getAuthors(): Promise<Array<IAuthor>> {
-	const content = localStorage.getItem(localStorageKey);
-	if (!content) {
-		return mockedAuthorsList;
+	const headers = getHeaders();
+	const response = await fetch(`${process.env.REACT_APP_API_URL}authors/all`, {
+		method: 'GET',
+		headers,
+	});
+	const info = await response.json();
+	if (response.ok && info.result) {
+		return info.result as Array<IAuthor>;
 	}
-
-	return JSON.parse(content);
+	throw new Error(ERRORS.AUTHORS);
 }
 
-export async function saveAuthors(
-	newAuthor: Omit<IAuthor, 'id'>
-): Promise<Array<IAuthor>> {
-	const existingAuthors = await getAuthors();
-	const id = uuidv4();
-
-	const updatedAuthors = existingAuthors.concat({
-		...newAuthor,
-		id,
+export async function addAuthor(author: IAuthorPayload): Promise<IAuthor> {
+	const headers = await getAuthHeaders();
+	const response = await fetch(`${process.env.REACT_APP_API_URL}authors/add`, {
+		method: 'POST',
+		body: JSON.stringify(author),
+		headers,
 	});
-	localStorage.setItem(localStorageKey, JSON.stringify(updatedAuthors));
-
-	return updatedAuthors;
+	const info = await response.json();
+	if (response.ok && info.result) {
+		return info.result as IAuthor;
+	}
+	throw new Error(ERRORS.AUTHORS);
 }

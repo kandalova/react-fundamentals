@@ -1,25 +1,21 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 
-import { AuthorsContext } from '../../../api/authors';
-import { CoursesContext } from '../../../api/courses';
 import { Button } from '../../../common/Button/Button';
 import { COURSE_INFO } from '../../../constants/constants';
-import { ICourse } from '../../../helpers/appTypes';
 import { formatDate } from '../../../helpers/formatDateCreation';
 import { formatDuration } from '../../../helpers/getCourseDuration';
-import { getAuthorsArray } from '../../../helpers/getValuesByIDsString';
+import { selectAuthorsById } from '../../../store/authors/authorsSelector';
+import { selectCourseById } from '../../../store/courses/coursesSelector';
 import { CourseProp } from '../components/CourseProp/CourseProp';
 
 import classes from './courseInfo.module.scss';
 
 export function CourseInfo() {
 	const { id } = useParams<{ id: string }>();
-	const courses = useContext(CoursesContext);
-	const authors = useContext(AuthorsContext);
-	const course: ICourse | undefined = courses.find(
-		(course) => course.id === id
-	);
+	const course = useSelector(selectCourseById(id || ''));
+	const authors = useSelector(selectAuthorsById(course?.authors || []));
 	return (
 		<div className={classes.container}>
 			<Link to='/courses'>
@@ -40,10 +36,7 @@ export function CourseInfo() {
 								prop={COURSE_INFO.CREATED}
 								value={formatDate(course.creationDate, '/')}
 							/>
-							<CourseProp
-								prop={COURSE_INFO.AUTHORS}
-								value={getAuthorsArray(course.authors, authors)}
-							/>
+							<CourseProp prop={COURSE_INFO.AUTHORS} value={authors} />
 						</div>
 					</div>
 				</>
