@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import * as yup from 'yup';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { addAuthor, getAuthors } from '../../api/authors';
-import { authorAdded, authorsLoaded } from '../../store/authors/authorsActions';
-import { Title } from './components/Title/Title';
-import { TextArea } from '../../common/TextArea/TextArea';
-import { CREATE_COURSE } from '../../constants/constants';
+import { addAuthor } from '../../api/authors';
+import { authorAdded } from '../../store/authors/authorsActions';
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
-import { DurationSection } from './components/DurationSection/DurationSection';
 import {
 	IAuthor,
 	IAuthorPayload,
@@ -18,17 +14,18 @@ import {
 	ICoursePayload,
 } from '../../helpers/appTypes';
 import { getCourse } from '../../helpers/createCourseHelper';
-import { addCourse } from '../../api/courses';
-import { courseAdded } from '../../store/courses/coursesActions';
-import { Authors } from './components/Authors/Authors';
+import { addCourse, updateCourse } from '../../api/courses';
+import { courseAdded, courseUpdated } from '../../store/courses/coursesActions';
 
 import classes from './courseForm.module.scss';
+import { FormContent } from './components/FormContent/FormContent';
 
 const initialValues: ICoursePayload = {
 	title: '',
 	description: '',
 	duration: '',
 	authors: [],
+	creationDate: '',
 };
 
 const validationSchema = yup.object({
@@ -47,18 +44,9 @@ const authorValidationSchema = yup.object({
 });
 
 export function CourseForm() {
+	const { id } = useParams<{ id: string }>();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		setLoading(true);
-		getAuthors()
-			.then((authors) => dispatch(authorsLoaded(authors)))
-			.finally(() => {
-				setLoading(false);
-			});
-	}, []);
 
 	function onCreateAuthorSubmit(
 		values: IAuthorPayload,
@@ -70,16 +58,21 @@ export function CourseForm() {
 		});
 	}
 
-	function onCreateCourseSubmit(
-		values: ICoursePayload,
-		{ resetForm }: FormikHelpers<ICoursePayload>
-	) {
-		const newCourse = getCourse(values);
-		addCourse(newCourse).then((course: ICourse) => {
-			dispatch(courseAdded(course));
-			resetForm();
-			navigate('/courses');
-		});
+	function onCreateCourseSubmit(values: ICoursePayload) {
+		console.log(values);
+		if (id) {
+			updateCourse(values, id).then((course: ICourse) => {
+				dispatch(courseUpdated(course));
+				navigate('/courses');
+			});
+		} else {
+			const newCourse = getCourse(values);
+			console.log('new', newCourse);
+			addCourse(newCourse).then((course: ICourse) => {
+				dispatch(courseAdded(course));
+				navigate('/courses');
+			});
+		}
 	}
 
 	return (
@@ -89,21 +82,7 @@ export function CourseForm() {
 				onSubmit={onCreateCourseSubmit}
 				validationSchema={validationSchema}
 			>
-				<Form>
-					<div>
-						<Title id='title' />
-						<TextArea
-							labelText={CREATE_COURSE.DESCRIPTION_LABEL}
-							id='description'
-						/>
-					</div>
-					<div className={classes.boxes}>
-						<div className={classes.box}>
-							<DurationSection id='duration' />
-						</div>
-					</div>
-					{!loading && <Authors name='authors' />}
-				</Form>
+				<FormContent />
 			</Formik>
 			<Formik
 				initialValues={authorInitialValues}

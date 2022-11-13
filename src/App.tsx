@@ -12,7 +12,11 @@ import { getToken } from './api/user';
 
 import classes from './app.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsUserLoading, selectToken } from './store/user/userSelector';
+import {
+	selectIsAdmin,
+	selectIsUserLoading,
+	selectToken,
+} from './store/user/userSelector';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { CourseForm } from './components/CourseForm/CourseForm';
 import { AppDispatch, loadMeTest } from './store/user/userThunks';
@@ -20,6 +24,7 @@ import { AppDispatch, loadMeTest } from './store/user/userThunks';
 function App() {
 	const token = useSelector(selectToken);
 	const isUserLoading = useSelector(selectIsUserLoading);
+	const isAdmin = useSelector(selectIsAdmin);
 	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(true);
 
@@ -56,7 +61,14 @@ function App() {
 					>
 						<Route path={'/courses'} element={<Courses />} />
 						<Route path='/courses/:id' element={<CourseInfo />} />
-						<Route path={'/courses/add'} element={<CourseForm />} />
+						<Route
+							element={
+								<ProtectedRoute isAllowed={isAdmin} redirectPath='/courses' />
+							}
+						>
+							<Route path={'/courses/add'} element={<CourseForm />} />
+							<Route path={'/courses/update/:id'} element={<CourseForm />} />
+						</Route>
 					</Route>
 					<Route path='*' element={<Navigate to='/courses' />} />
 				</Routes>

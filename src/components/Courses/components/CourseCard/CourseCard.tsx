@@ -55,9 +55,12 @@ export function CourseCard({ course }: ICourseCard) {
 					</Link>
 					{isAdmin && (
 						<>
-							<div className={classes.icon}>
+							<Link
+								className={classes.icon}
+								to={`/courses/update/${course.id}`}
+							>
 								<AiFillEdit />
-							</div>
+							</Link>
 							<div
 								className={classes.icon}
 								onClick={() => onDeleteCourseSubmit(course.id)}
