@@ -14,6 +14,7 @@ import { CourseProp } from '../CourseProp/CourseProp';
 import classes from './courseCard.module.scss';
 import { courseDeleted } from '../../../../store/courses/coursesActions';
 import { deleteCourse } from '../../../../api/courses';
+import { selectIsAdmin } from '../../../../store/user/userSelector';
 
 interface ICourseCard {
 	course: ICourse;
@@ -23,6 +24,7 @@ export function CourseCard({ course }: ICourseCard) {
 	const authors = useSelector(
 		selectAuthorNamesStringById(course?.authors || [])
 	);
+	const isAdmin = useSelector(selectIsAdmin);
 	const dispatch = useDispatch();
 
 	function onDeleteCourseSubmit(id: string) {
@@ -51,15 +53,19 @@ export function CourseCard({ course }: ICourseCard) {
 					<Link to={`/courses/${course.id}`}>
 						<Button text={COURSE_CARD.BUTTON} />
 					</Link>
-					<div className={classes.icon}>
-						<AiFillEdit />
-					</div>
-					<div
-						className={classes.icon}
-						onClick={() => onDeleteCourseSubmit(course.id)}
-					>
-						<AiFillDelete />
-					</div>
+					{isAdmin && (
+						<>
+							<div className={classes.icon}>
+								<AiFillEdit />
+							</div>
+							<div
+								className={classes.icon}
+								onClick={() => onDeleteCourseSubmit(course.id)}
+							>
+								<AiFillDelete />
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 		</div>

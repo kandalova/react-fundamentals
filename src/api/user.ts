@@ -59,7 +59,8 @@ export async function getMe(token: string): Promise<IUserPayload> {
 		throw new Error(error);
 	}
 	if (info.result) {
-		return { ...info.result, token };
+		const { name, email, role } = info.result;
+		return { name, email, role, token };
 	}
 	throw new Error(ERRORS.LOGIN);
 }

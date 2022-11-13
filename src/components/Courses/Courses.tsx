@@ -11,6 +11,7 @@ import { checkStringIncludes } from '../../helpers/checkStringIncludes';
 import { authorsLoaded } from '../../store/authors/authorsActions';
 import { coursesLoaded } from '../../store/courses/coursesActions';
 import { selectCourses } from '../../store/courses/coursesSelector';
+import { selectIsAdmin } from '../../store/user/userSelector';
 import { CourseCard } from './components/CourseCard/CourseCard';
 import { ISearchPayload, SearchBar } from './components/SearchBar/SearchBar';
 
@@ -19,6 +20,7 @@ import classes from './courses.module.scss';
 export function Courses() {
 	const [searchValue, setSearchValue] = useState<string>('');
 	const courses = useSelector(selectCourses);
+	const isAdmin = useSelector(selectIsAdmin);
 	const dispatch = useDispatch();
 	const [loading, setLoading] = useState(true);
 
@@ -54,9 +56,11 @@ export function Courses() {
 				<SearchBar
 					onSearch={({ search }: ISearchPayload) => setSearchValue(search)}
 				/>
-				<Link to={'/courses/add'}>
-					<Button text={ADD_COURSE_BUTTON_TEXT} />
-				</Link>
+				{isAdmin && (
+					<Link to={'/courses/add'}>
+						<Button text={ADD_COURSE_BUTTON_TEXT} />
+					</Link>
+				)}
 			</div>
 			{!loading && courses.length && (
 				<div className={classes.courseList}>

@@ -3,24 +3,24 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
 
-import { IUserPayload } from './helpers/appTypes';
 import { Registration } from './components/Registration/Registration';
 import { Login } from './components/Login/Login';
 import { Courses } from './components/Courses/Courses';
 import { CourseInfo } from './components/Courses/CourseInfo/CourseInfo';
 
-import { getMe, getToken } from './api/user';
+import { getToken } from './api/user';
 
 import classes from './app.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectToken } from './store/user/userSelector';
-import { userLogined } from './store/user/userActions';
+import { selectIsUserLoading, selectToken } from './store/user/userSelector';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { CourseForm } from './components/CourseForm/CourseForm';
+import { AppDispatch, loadMeTest } from './store/user/userThunks';
 
 function App() {
 	const token = useSelector(selectToken);
-	const dispatch = useDispatch();
+	const isUserLoading = useSelector(selectIsUserLoading);
+	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -28,12 +28,8 @@ function App() {
 		getToken()
 			.then((token) => {
 				if (token) {
-					return getMe(token);
+					dispatch(loadMeTest);
 				}
-				throw new Error('Cannot log in');
-			})
-			.then((payload: IUserPayload) => {
-				dispatch(userLogined(payload));
 			})
 			.finally(() => {
 				setLoading(false);

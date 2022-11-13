@@ -21,12 +21,14 @@ export interface IUserInfo {
 	name: string;
 	email: string;
 	token: string;
+	role: string;
 }
 
 export interface IUserPayload {
 	name: string;
 	email: string;
 	token: string;
+	role: string;
 }
 
 export interface ICoursePayload {
