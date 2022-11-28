@@ -8,3 +8,5 @@ export const selectIsUserLoading = (state: StoreState) =>
 export const selectIsAdmin = (state: StoreState) =>
 	state.user.userInfo.role === 'admin';
 export const selectLoginError = (state: StoreState) => state.user.loginError;
+export const selectRegistartionError = (state: StoreState) =>
+	state.user.registrationError;

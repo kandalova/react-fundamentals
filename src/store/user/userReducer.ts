@@ -1,6 +1,11 @@
 import { combineReducers, createReducer, isAnyOf } from '@reduxjs/toolkit';
 import { IUserInfo } from '../../helpers/appTypes';
-import { loadMeActions, userLoginActions, userLogouted } from './userActions';
+import {
+	loadMeActions,
+	userLoginActions,
+	userLogouted,
+	userRegistrationActions,
+} from './userActions';
 
 const preloadedState: IUserInfo = {
 	isAuth: false,
@@ -37,6 +42,24 @@ const loginError = createReducer('', (builder) => {
 	);
 });
 
+const registrationError = createReducer('', (builder) => {
+	builder.addCase(userRegistrationActions.error, (_state, action) => {
+		return action.payload;
+	});
+	builder.addMatcher(
+		isAnyOf(userRegistrationActions.init, userRegistrationActions.success),
+		() => ''
+	);
+});
+
+const isRegistrationInProcess = createReducer(false, (builder) => {
+	builder.addCase(userRegistrationActions.init, () => true);
+	builder.addMatcher(
+		isAnyOf(userRegistrationActions.error, userRegistrationActions.success),
+		() => false
+	);
+});
+
 const isLoginInProcess = createReducer(false, (builder) => {
 	builder.addCase(userLoginActions.init, () => true);
 	builder.addMatcher(
@@ -50,4 +73,6 @@ export const userReducer = combineReducers({
 	isUserLoading,
 	loginError,
 	isLoginInProcess,
+	registrationError,
+	isRegistrationInProcess,
 });

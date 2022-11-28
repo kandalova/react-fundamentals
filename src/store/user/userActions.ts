@@ -30,4 +30,7 @@ export const loadMeActions = createApiActions<void, IUserPayload, Error>(
 export const userLoginActions = createApiActions<void, void, string>(
 	'USER/USER_LOGIN'
 );
+export const userRegistrationActions = createApiActions<void, void, string>(
+	'USER/USER_REGISTRATION'
+);
 export const userLogouted = createAction('USER/USER_LOGOUTED');

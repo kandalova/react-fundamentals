@@ -4,14 +4,15 @@ import {
 	ThunkAction,
 	ThunkDispatch,
 } from '@reduxjs/toolkit';
-import { getMe, getToken, signIn, signOut } from '../../api/user';
-import { ISignIn } from '../../helpers/appTypes';
+import { getMe, getToken, signIn, signOut, signUp } from '../../api/user';
+import { ISignIn, ISignUp } from '../../helpers/appTypes';
 import { StoreState } from '../rootReducer';
 import {
 	AppActions,
 	loadMeActions,
 	userLoginActions,
 	userLogouted,
+	userRegistrationActions,
 } from './userActions';
 import { history } from '../../history';
 import { getErrorString } from '../../helpers/errorTypeHandler';
@@ -66,7 +67,26 @@ function logoutThunk(): AppThunkAction {
 	};
 }
 
+function registrationThunk<Actions extends AppActions<void, void, string>>(
+	payload: ISignUp,
+	actions: Actions
+): AppThunkAction {
+	return async (dispatch) => {
+		await dispatch(actions.init());
+		try {
+			await signUp(payload);
+			dispatch(actions.success());
+			history.push('/login');
+		} catch (e) {
+			const error = getErrorString(e);
+			dispatch(actions.error(error));
+		}
+	};
+}
+
 export const logoutUser = logoutThunk();
+export const loadMe = getMeThunk(getMe, loadMeActions);
 export const loginUser = (payload: ISignIn) =>
 	loginThunk(payload, userLoginActions);
-export const loadMe = getMeThunk(getMe, loadMeActions);
+export const signUpUser = (payload: ISignUp) =>
+	registrationThunk(payload, userRegistrationActions);
