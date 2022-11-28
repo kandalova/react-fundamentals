@@ -12,9 +12,9 @@ import { selectAuthorNamesStringById } from '../../../../store/authors/authorsSe
 import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
-import { courseDeleted } from '../../../../store/courses/coursesActions';
-import { deleteCourse } from '../../../../api/courses';
 import { selectIsAdmin } from '../../../../store/user/userSelector';
+import { AppDispatch } from '../../../../store/user/userThunks';
+import { removeCourse } from '../../../../store/courses/coursesThunks';
 
 interface ICourseCard {
 	course: ICourse;
@@ -25,12 +25,10 @@ export function CourseCard({ course }: ICourseCard) {
 		selectAuthorNamesStringById(course?.authors || [])
 	);
 	const isAdmin = useSelector(selectIsAdmin);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 
 	function onDeleteCourseSubmit(id: string) {
-		deleteCourse(id).then(() => {
-			dispatch(courseDeleted(id));
-		});
+		dispatch(removeCourse(id));
 	}
 
 	return (

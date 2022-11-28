@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as yup from 'yup';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { addAuthor } from '../../api/authors';
 import { authorAdded } from '../../store/authors/authorsActions';
@@ -10,15 +10,13 @@ import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection
 import {
 	IAuthor,
 	IAuthorPayload,
-	ICourse,
 	ICoursePayload,
 } from '../../helpers/appTypes';
-import { getCourse } from '../../helpers/createCourseHelper';
-import { addCourse, updateCourse } from '../../api/courses';
-import { courseAdded, courseUpdated } from '../../store/courses/coursesActions';
 
 import classes from './courseForm.module.scss';
 import { FormContent } from './components/FormContent/FormContent';
+import { submitCourse } from '../../store/courses/coursesThunks';
+import { AppDispatch } from '../../store/user/userThunks';
 
 const initialValues: ICoursePayload = {
 	title: '',
@@ -45,8 +43,7 @@ const authorValidationSchema = yup.object({
 
 export function CourseForm() {
 	const { id } = useParams<{ id: string }>();
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispatch>();
 
 	function onCreateAuthorSubmit(
 		values: IAuthorPayload,
@@ -59,20 +56,7 @@ export function CourseForm() {
 	}
 
 	function onCreateCourseSubmit(values: ICoursePayload) {
-		console.log(values);
-		if (id) {
-			updateCourse(values, id).then((course: ICourse) => {
-				dispatch(courseUpdated(course));
-				navigate('/courses');
-			});
-		} else {
-			const newCourse = getCourse(values);
-			console.log('new', newCourse);
-			addCourse(newCourse).then((course: ICourse) => {
-				dispatch(courseAdded(course));
-				navigate('/courses');
-			});
-		}
+		dispatch(submitCourse(values, id || ''));
 	}
 
 	return (
