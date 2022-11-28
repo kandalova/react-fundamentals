@@ -4,19 +4,14 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { addAuthor } from '../../api/authors';
-import { authorAdded } from '../../store/authors/authorsActions';
 import { AddAuthorSection } from './components/AddAuthorSection/AddAuthorSection';
-import {
-	IAuthor,
-	IAuthorPayload,
-	ICoursePayload,
-} from '../../helpers/appTypes';
+import { IAuthorPayload, ICoursePayload } from '../../helpers/appTypes';
 
 import classes from './courseForm.module.scss';
 import { FormContent } from './components/FormContent/FormContent';
 import { submitCourse } from '../../store/courses/coursesThunks';
 import { AppDispatch } from '../../store/user/userThunks';
+import { addNewAuthor } from '../../store/authors/authorsThunks';
 
 const initialValues: ICoursePayload = {
 	title: '',
@@ -49,10 +44,7 @@ export function CourseForm() {
 		values: IAuthorPayload,
 		{ resetForm }: FormikHelpers<IAuthorPayload>
 	) {
-		addAuthor(values).then((author: IAuthor) => {
-			dispatch(authorAdded(author));
-			resetForm();
-		});
+		dispatch(addNewAuthor(values, resetForm));
 	}
 
 	function onCreateCourseSubmit(values: ICoursePayload) {

@@ -27,7 +27,15 @@ export const courses = createReducer<Array<ICourse>>(
 	}
 );
 
-export const isCoursesLoaded = createReducer(false, (builder) => {
+const isCoursesLoaded = createReducer(false, (builder) => {
+	builder.addCase(coursesLoadActions.init, () => false);
+	builder.addMatcher(
+		isAnyOf(coursesLoadActions.success, coursesLoadActions.error),
+		() => true
+	);
+});
+
+const currentCourse = createReducer(false, (builder) => {
 	builder.addCase(coursesLoadActions.init, () => false);
 	builder.addMatcher(
 		isAnyOf(coursesLoadActions.success, coursesLoadActions.error),
@@ -38,4 +46,5 @@ export const isCoursesLoaded = createReducer(false, (builder) => {
 export const courseReducer = combineReducers({
 	courses,
 	isCoursesLoaded,
+	currentCourse,
 });
