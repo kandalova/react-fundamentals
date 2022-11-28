@@ -1,6 +1,6 @@
 import { combineReducers, createReducer, isAnyOf } from '@reduxjs/toolkit';
 import { IUserInfo } from '../../helpers/appTypes';
-import { loadMeActions, userLogouted } from './userActions';
+import { loadMeActions, userLoginActions, userLogouted } from './userActions';
 
 const preloadedState: IUserInfo = {
 	isAuth: false,
@@ -19,14 +19,6 @@ const userInfo = createReducer<IUserInfo>(preloadedState, (builder) => {
 	});
 });
 
-const isAdmin = createReducer(false, (builder) => {
-	builder.addCase(userLogouted, () => false);
-	builder.addCase(
-		loadMeActions.success,
-		(_, action) => action.payload.role === 'admin'
-	);
-});
-
 const isUserLoading = createReducer(false, (builder) => {
 	builder.addCase(loadMeActions.init, () => true);
 	builder.addMatcher(
@@ -35,8 +27,27 @@ const isUserLoading = createReducer(false, (builder) => {
 	);
 });
 
+const loginError = createReducer('', (builder) => {
+	builder.addCase(userLoginActions.error, (_state, action) => {
+		return action.payload;
+	});
+	builder.addMatcher(
+		isAnyOf(userLoginActions.init, loadMeActions.success),
+		() => ''
+	);
+});
+
+const isLoginInProcess = createReducer(false, (builder) => {
+	builder.addCase(userLoginActions.init, () => true);
+	builder.addMatcher(
+		isAnyOf(userLoginActions.error, loadMeActions.success),
+		() => false
+	);
+});
+
 export const userReducer = combineReducers({
 	userInfo,
-	isAdmin,
 	isUserLoading,
+	loginError,
+	isLoginInProcess,
 });

@@ -5,17 +5,16 @@ import {
 	ThunkDispatch,
 } from '@reduxjs/toolkit';
 import { getMe, getToken, signIn, signOut } from '../../api/user';
-import { ISignIn, IUserPayload } from '../../helpers/appTypes';
+import { ISignIn } from '../../helpers/appTypes';
 import { StoreState } from '../rootReducer';
 import {
-	createApiActions,
+	AppActions,
 	loadMeActions,
-	loadMeError,
-	loadMeRequest,
-	loadMeSuccess,
+	userLoginActions,
 	userLogouted,
 } from './userActions';
 import { history } from '../../history';
+import { getErrorString } from '../../helpers/errorTypeHandler';
 
 export type AppThunkAction<ReturnType = unknown> = ThunkAction<
 	ReturnType,
@@ -25,27 +24,15 @@ export type AppThunkAction<ReturnType = unknown> = ThunkAction<
 >;
 export type AppDispatch = ThunkDispatch<StoreState, unknown, Action>;
 
-function getMeThunk(): AppThunkAction {
-	return async (dispatch) => {
-		await dispatch(loadMeRequest);
-		try {
-			const token = await getToken();
-			const data = await getMe(token);
-			dispatch(loadMeSuccess(data));
-		} catch (e) {
-			dispatch(loadMeError(e as Error));
-		}
-	};
-}
-
-function getMeThunkTest(
-	actions: ReturnType<typeof createApiActions>
+function getMeThunk<Payload, Actions extends AppActions<void, Payload>>(
+	apiCall: (token: string) => Promise<Payload>,
+	actions: Actions
 ): AppThunkAction {
 	return async (dispatch) => {
-		await dispatch(actions.init);
+		await dispatch(actions.init());
 		try {
 			const token = await getToken();
-			const data = await getMe(token);
+			const data = await apiCall(token);
 			dispatch(actions.success(data));
 		} catch (e) {
 			dispatch(actions.error(e as Error));
@@ -53,16 +40,19 @@ function getMeThunkTest(
 	};
 }
 
-function loginThunk(payload: ISignIn): AppThunkAction {
+function loginThunk<Actions extends AppActions<void, void, string>>(
+	payload: ISignIn,
+	actions: Actions
+): AppThunkAction {
 	return async (dispatch) => {
+		await dispatch(actions.init());
 		try {
-			const loginedUserPayload = await signIn(payload);
-			console.log(loginedUserPayload);
-			await dispatch(getMeThunkTest(loadMeActions));
+			await signIn(payload);
+			await dispatch(getMeThunk(getMe, loadMeActions));
 			history.push('/courses');
-		} catch (error: unknown) {
-			// const message = getErrorString(error);
-			// setError(message);
+		} catch (e) {
+			const error = getErrorString(e);
+			dispatch(actions.error(error));
 		}
 	};
 }
@@ -76,8 +66,7 @@ function logoutThunk(): AppThunkAction {
 	};
 }
 
-export const loadMe = getMeThunk();
-export const loginUser = (payload: ISignIn) => loginThunk(payload);
 export const logoutUser = logoutThunk();
-
-export const loadMeTest = getMeThunkTest(loadMeActions);
+export const loginUser = (payload: ISignIn) =>
+	loginThunk(payload, userLoginActions);
+export const loadMe = getMeThunk(getMe, loadMeActions);

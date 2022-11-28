@@ -7,6 +7,8 @@ import {
 	courseUpdated,
 } from './coursesActions';
 
+// Record<string, ICourse>;
+
 const preparedState = [] as Array<ICourse>;
 export const courseReducer = createReducer<Array<ICourse>>(
 	preparedState,

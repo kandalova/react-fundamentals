@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -8,6 +8,7 @@ import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { LOGIN } from '../../constants/constants';
 import { ISignIn } from '../../helpers/appTypes';
+import { selectLoginError } from '../../store/user/userSelector';
 import { AppDispatch, loginUser } from '../../store/user/userThunks';
 
 import classes from './../Registration/registration.module.scss';
@@ -23,20 +24,11 @@ const validationSchema = yup.object({
 });
 
 export function Login() {
-	const [error, setError] = useState<string>('');
 	const dispatch = useDispatch<AppDispatch>();
+	const error = useSelector(selectLoginError);
 
 	const onLoginSubmit = async ({ email, password }: ISignIn) => {
-		setError('');
 		dispatch(loginUser({ email, password }));
-		// try {
-		// 	const loginedUserPayload = await signIn({ email, password });
-		// 	dispatch(userLogined(loginedUserPayload));
-		// 	navigate('/');
-		// } catch (error: unknown) {
-		// 	const message = getErrorString(error);
-		// 	setError(message);
-		// }
 	};
 
 	return (
