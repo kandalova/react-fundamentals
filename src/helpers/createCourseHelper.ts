@@ -17,7 +17,6 @@ export function getCourse({
 		description,
 		authors,
 		duration: Number(duration),
-		creationDate,
 	};
 }
 

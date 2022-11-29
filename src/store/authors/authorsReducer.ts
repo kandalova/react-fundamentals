@@ -1,13 +1,30 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { combineReducers, createReducer, isAnyOf } from '@reduxjs/toolkit';
 import { IAuthor } from '../../helpers/appTypes';
-import { authorAdded, authorsLoaded } from './authorsActions';
+import {
+	authorAddActions,
+	authorsLoadActions,
+	authorsLoaded,
+} from './authorsActions';
 
 const preloadedState = [] as Array<IAuthor>;
 
-export const authorsReducer = createReducer<Array<IAuthor>>(
-	preloadedState,
-	(builder) => {
-		builder.addCase(authorsLoaded, (state, action) => action.payload);
-		builder.addCase(authorAdded, (state, action) => [...state, action.payload]);
-	}
-);
+const authors = createReducer<Array<IAuthor>>(preloadedState, (builder) => {
+	builder.addCase(authorsLoaded, (_state, action) => action.payload);
+	builder.addCase(authorAddActions.success, (state, action) => [
+		...state,
+		action.payload,
+	]);
+});
+
+const isAuthorsWithCourseLoaded = createReducer(false, (builder) => {
+	builder.addCase(authorsLoadActions.init, () => false);
+	builder.addMatcher(
+		isAnyOf(authorsLoadActions.success, authorsLoadActions.error),
+		() => true
+	);
+});
+
+export const authorsReducer = combineReducers({
+	authors,
+	isAuthorsWithCourseLoaded,
+});

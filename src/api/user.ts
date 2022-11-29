@@ -37,8 +37,7 @@ export async function signIn(user: ISignIn): Promise<IUserPayload> {
 			? info.errors[0]
 			: info.result || ERRORS.LOGIN;
 		throw new Error(error);
-	}
-	if (info.result && info.user) {
+	} else if (info.result && info.user) {
 		await setToken(info.result);
 		return { ...info.user, token: info.result };
 	}
@@ -59,7 +58,8 @@ export async function getMe(token: string): Promise<IUserPayload> {
 		throw new Error(error);
 	}
 	if (info.result) {
-		return { ...info.result, token };
+		const { password: _, ...user } = info.result;
+		return { ...user, token };
 	}
 	throw new Error(ERRORS.LOGIN);
 }
