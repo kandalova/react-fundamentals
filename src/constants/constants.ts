@@ -4,6 +4,7 @@ export const enum CREATE_COURSE {
 	DESCRIPTION_LABEL = 'Description',
 	DURATION_HEADER = 'Duration',
 	DURATION_LABEL = 'Duration',
+	BUTTON_UPDATE = 'Update course',
 }
 
 export const enum CREATE_COURSE_AUTHORS {

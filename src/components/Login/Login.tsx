@@ -1,16 +1,15 @@
 import { Formik, Form } from 'formik';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
-import { signIn } from '../../api/user';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { LOGIN } from '../../constants/constants';
 import { ISignIn } from '../../helpers/appTypes';
-import { getErrorString } from '../../helpers/errorTypeHandler';
-import { userLogined } from '../../store/user/userActions';
+import { selectLoginError } from '../../store/user/userSelector';
+import { AppDispatch, loginUser } from '../../store/user/userThunks';
 
 import classes from './../Registration/registration.module.scss';
 
@@ -25,20 +24,11 @@ const validationSchema = yup.object({
 });
 
 export function Login() {
-	const [error, setError] = useState<string>('');
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
+	const error = useSelector(selectLoginError);
 
 	const onLoginSubmit = async ({ email, password }: ISignIn) => {
-		setError('');
-		try {
-			const loginedUserPayload = await signIn({ email, password });
-			dispatch(userLogined(loginedUserPayload));
-			navigate('/courses');
-		} catch (error: unknown) {
-			const message = getErrorString(error);
-			setError(message);
-		}
+		dispatch(loginUser({ email, password }));
 	};
 
 	return (

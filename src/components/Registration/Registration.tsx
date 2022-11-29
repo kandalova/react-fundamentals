@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { Formik, Form } from 'formik';
 
-import { signUp } from '../../api/user';
 import { Button } from '../../common/Button/Button';
 import { Input } from '../../common/Input/Input';
 import { REGISTRATION } from '../../constants/constants';
 import { ISignUp } from '../../helpers/appTypes';
-import { getErrorString } from '../../helpers/errorTypeHandler';
 
 import classes from './registration.module.scss';
+import { AppDispatch, signUpUser } from '../../store/user/userThunks';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectRegistartionError } from '../../store/user/userSelector';
 
 const initialValues: ISignUp = {
 	name: '',
@@ -25,18 +26,11 @@ const validationSchema = yup.object({
 });
 
 export function Registration() {
-	const [error, setError] = useState<string>('');
-	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispatch>();
+	const error = useSelector(selectRegistartionError);
 
 	const onRegisterSubmit = async ({ name, email, password }: ISignUp) => {
-		setError('');
-		try {
-			await signUp({ name, password, email });
-			navigate('/login');
-		} catch (error: unknown) {
-			const message = getErrorString(error);
-			setError(message);
-		}
+		dispatch(signUpUser({ name, password, email }));
 	};
 
 	return (

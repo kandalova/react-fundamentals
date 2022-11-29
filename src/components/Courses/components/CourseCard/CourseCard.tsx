@@ -12,8 +12,9 @@ import { selectAuthorNamesStringById } from '../../../../store/authors/authorsSe
 import { CourseProp } from '../CourseProp/CourseProp';
 
 import classes from './courseCard.module.scss';
-import { courseDeleted } from '../../../../store/courses/coursesActions';
-import { deleteCourse } from '../../../../api/courses';
+import { selectIsAdmin } from '../../../../store/user/userSelector';
+import { AppDispatch } from '../../../../store/user/userThunks';
+import { removeCourse } from '../../../../store/courses/coursesThunks';
 
 interface ICourseCard {
 	course: ICourse;
@@ -23,12 +24,11 @@ export function CourseCard({ course }: ICourseCard) {
 	const authors = useSelector(
 		selectAuthorNamesStringById(course?.authors || [])
 	);
-	const dispatch = useDispatch();
+	const isAdmin = useSelector(selectIsAdmin);
+	const dispatch = useDispatch<AppDispatch>();
 
 	function onDeleteCourseSubmit(id: string) {
-		deleteCourse(id).then(() => {
-			dispatch(courseDeleted(id));
-		});
+		dispatch(removeCourse(id));
 	}
 
 	return (
@@ -51,15 +51,22 @@ export function CourseCard({ course }: ICourseCard) {
 					<Link to={`/courses/${course.id}`}>
 						<Button text={COURSE_CARD.BUTTON} />
 					</Link>
-					<div className={classes.icon}>
-						<AiFillEdit />
-					</div>
-					<div
-						className={classes.icon}
-						onClick={() => onDeleteCourseSubmit(course.id)}
-					>
-						<AiFillDelete />
-					</div>
+					{isAdmin && (
+						<>
+							<Link
+								className={classes.icon}
+								to={`/courses/update/${course.id}`}
+							>
+								<AiFillEdit />
+							</Link>
+							<div
+								className={classes.icon}
+								onClick={() => onDeleteCourseSubmit(course.id)}
+							>
+								<AiFillDelete />
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 		</div>

@@ -6,7 +6,7 @@ import { CREATE_COURSE_AUTHORS } from '../../../../constants/constants';
 import { selectAuthors } from '../../../../store/authors/authorsSelector';
 import { AuthorListSection } from '../AuthorsListSection/AuthorsListSection';
 
-import classes from '../../creareCourse.module.scss';
+import classes from '../../courseForm.module.scss';
 
 interface IAuthorsProps {
 	name: string;

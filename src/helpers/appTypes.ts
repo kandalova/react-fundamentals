@@ -21,12 +21,14 @@ export interface IUserInfo {
 	name: string;
 	email: string;
 	token: string;
+	role: string;
 }
 
 export interface IUserPayload {
 	name: string;
 	email: string;
 	token: string;
+	role: string;
 }
 
 export interface ICoursePayload {
@@ -34,6 +36,7 @@ export interface ICoursePayload {
 	description: string;
 	duration: number | string;
 	authors: Array<string>;
+	creationDate: string;
 }
 
 export interface ICourse {
@@ -45,4 +48,9 @@ export interface ICourse {
 	authors: Array<string>;
 }
 
-export type INewCourse = Omit<ICourse, 'id'>;
+export interface INewCourse {
+	title: string;
+	description: string;
+	duration: number;
+	authors: Array<string>;
+}

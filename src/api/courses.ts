@@ -1,6 +1,6 @@
 import { ERRORS } from '../constants/constants';
 
-import { ICourse, INewCourse } from '../helpers/appTypes';
+import { ICourse, ICoursePayload, INewCourse } from '../helpers/appTypes';
 import { getAuthHeaders } from './headers';
 
 export async function getCourses(): Promise<Array<ICourse>> {
@@ -30,6 +30,27 @@ export async function addCourse(course: INewCourse): Promise<ICourse> {
 	throw new Error(ERRORS.COURSES);
 }
 
+export async function updateCourse(
+	course: ICoursePayload,
+	id: string
+): Promise<ICourse> {
+	const headers = await getAuthHeaders();
+	const response = await fetch(
+		`${process.env.REACT_APP_API_URL}courses/${id}`,
+		{
+			method: 'PUT',
+			body: JSON.stringify(course),
+			headers,
+		}
+	);
+	const info = await response.json();
+	console.log(info);
+	if (response.ok && info.result) {
+		return info.result as ICourse;
+	}
+	throw new Error(ERRORS.COURSES);
+}
+
 export async function deleteCourse(id: string) {
 	const headers = await getAuthHeaders();
 	const response = await fetch(
@@ -42,4 +63,21 @@ export async function deleteCourse(id: string) {
 	if (!response.ok) {
 		throw new Error(ERRORS.COURSES);
 	}
+}
+
+export async function getCourseByID(id: string): Promise<ICourse> {
+	const headers = await getAuthHeaders();
+	const response = await fetch(
+		`${process.env.REACT_APP_API_URL}courses/${id}`,
+		{
+			method: 'GET',
+			headers,
+		}
+	);
+	const info = await response.json();
+	console.log(info);
+	if (response.ok && info.result) {
+		return info.result as ICourse;
+	}
+	throw new Error(ERRORS.COURSES);
 }

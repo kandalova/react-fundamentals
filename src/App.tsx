@@ -1,48 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { Header } from './components/Header/Header';
-import { CreateCourse } from './components/CreateCourse/CreateCourse';
-import { IUserPayload } from './helpers/appTypes';
+
 import { Registration } from './components/Registration/Registration';
 import { Login } from './components/Login/Login';
 import { Courses } from './components/Courses/Courses';
 import { CourseInfo } from './components/Courses/CourseInfo/CourseInfo';
 
-import { getMe, getToken } from './api/user';
-
 import classes from './app.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectToken } from './store/user/userSelector';
-import { userLogined } from './store/user/userActions';
+import { selectIsAdmin, selectToken } from './store/user/userSelector';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { CourseForm } from './components/CourseForm/CourseForm';
+import { AppDispatch } from './store/user/userThunks';
+import { loadApp } from './store/app/appThunks';
+import { selectIsAppLoaded } from './store/app/appSelector';
 
 function App() {
 	const token = useSelector(selectToken);
-	const dispatch = useDispatch();
-	const [loading, setLoading] = useState(true);
+	const isAppLoaded = useSelector(selectIsAppLoaded);
+	const isAdmin = useSelector(selectIsAdmin);
+	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
-		setLoading(true);
-		getToken()
-			.then((token) => {
-				if (token) {
-					return getMe(token);
-				}
-				throw new Error('Cannot log in');
-			})
-			.then((payload: IUserPayload) => {
-				dispatch(userLogined(payload));
-			})
-			.finally(() => {
-				setLoading(false);
-			});
+		dispatch(loadApp);
 	}, []);
 
 	return (
 		<div className={classes.app}>
 			<Header />
-			{!loading && (
+			{isAppLoaded && (
 				<Routes>
 					<Route
 						element={
@@ -59,7 +47,14 @@ function App() {
 					>
 						<Route path={'/courses'} element={<Courses />} />
 						<Route path='/courses/:id' element={<CourseInfo />} />
-						<Route path={'/courses/add'} element={<CreateCourse />} />
+						<Route
+							element={
+								<ProtectedRoute isAllowed={isAdmin} redirectPath='/courses' />
+							}
+						>
+							<Route path={'/courses/add'} element={<CourseForm />} />
+							<Route path={'/courses/update/:id'} element={<CourseForm />} />
+						</Route>
 					</Route>
 					<Route path='*' element={<Navigate to='/courses' />} />
 				</Routes>
