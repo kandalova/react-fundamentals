@@ -13,5 +13,3 @@ export function getHeaders() {
 		'Content-Type': 'application/json',
 	};
 }
-
-//comment for PR

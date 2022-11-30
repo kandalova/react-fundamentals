@@ -1,4 +1,3 @@
-import { ERRORS } from '../constants/constants';
 import { IAuthor, ICoursePayload, INewCourse } from './appTypes';
 
 export function isValidCourseData(authors: Array<string>): boolean {
@@ -11,7 +10,6 @@ export function getCourse({
 	duration,
 	authors,
 }: ICoursePayload): INewCourse {
-	const creationDate = new Date().toLocaleString();
 	return {
 		title,
 		description,
