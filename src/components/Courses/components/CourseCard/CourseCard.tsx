@@ -48,17 +48,17 @@ export function CourseCard({ course }: ICourseCard) {
 					value={formatDate(course.creationDate, '.')}
 				/>
 				<div className={classes.buttonBar}>
-					<Link to={`/courses/${course.id}`}>
-						<Button text={COURSE_CARD.BUTTON} />
-					</Link>
+					{/* <Link to={`/courses/${course.id}`}> */}
+					<Button text={COURSE_CARD.BUTTON} />
+					{/* </Link> */}
 					{isAdmin && (
 						<>
-							<Link
+							{/* <Link
 								className={classes.icon}
 								to={`/courses/update/${course.id}`}
-							>
-								<AiFillEdit />
-							</Link>
+							> */}
+							<AiFillEdit />
+							{/* </Link> */}
 							<div
 								className={classes.icon}
 								onClick={() => onDeleteCourseSubmit(course.id)}
