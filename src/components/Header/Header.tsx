@@ -16,9 +16,9 @@ export function Header() {
 
 	return (
 		<div className={classes.header}>
-			{/* <Link to={'/'}> */}
-			<Logo />
-			{/* </Link> */}
+			<Link to={'/'}>
+				<Logo />
+			</Link>
 			{user.isAuth && (
 				<div className={classes.userInfo}>
 					{user.isAuth && <p>{user.name}</p>}
