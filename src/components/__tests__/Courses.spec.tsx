@@ -57,23 +57,12 @@ describe('Courses', () => {
 		});
 		expect(screen.getByText(mockedCourse.title)).toBeVisible();
 		expect(screen.getByText(mockedCourse.description)).toBeVisible();
-		// expect(
-		// 	screen.getByText(formatDate(mockedCourse.creationDate, '.'))
-		// ).toBeVisible();
 		expect(screen.getByText('20.02.1997')).toBeVisible();
-		// expect(
-		// 	screen.getByText(formatDuration(mockedCourse.duration))
-		// ).toBeVisible();
 		expect(screen.getByText('01:04 hour')).toBeVisible();
 		expect(screen.getByText('test author, test author')).toBeVisible();
 	});
 
 	it('Component should render courses list', () => {
-		// jest.doMock(
-		// 	'../../components/Courses/components/CourseCard/CourseCard',
-		// 	() => 'CourseCard'
-		// );
-
 		renderApp(<Courses />, {
 			authors: { authors: mockedAuthors, isAuthorsWithCourseLoaded: true },
 			courses: { courses: mockedCourses, isCoursesLoaded: true },
@@ -89,6 +78,9 @@ describe('Courses', () => {
 			courses: { courses: mockedCourses, isCoursesLoaded: true },
 		});
 
-		expect(screen.getByText('Add new course')).toBeVisible();
+		const addNewCourseElement: HTMLLinkElement =
+			screen.getByTestId('add-course');
+		expect(addNewCourseElement).toHaveTextContent('Add new course');
+		expect(addNewCourseElement.href.endsWith('/courses/add')).toBeTruthy();
 	});
 });
