@@ -34,7 +34,7 @@ export function CourseCard({ course }: ICourseCard) {
 	return (
 		<div className={classes.card}>
 			<div className={classes.leftInfo}>
-				<h3>{course.title}</h3>
+				<h3 data-testid='courseCard'>{course.title}</h3>
 				<p>{course.description}</p>
 			</div>
 			<div className={classes.rightInfo}>
