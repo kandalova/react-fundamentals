@@ -1,7 +1,6 @@
 import { renderApp } from '../../utils/renderApp';
 import { Header } from '../Header/Header';
 import { screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import React from 'react';
 
 jest.mock('react-redux', () => {

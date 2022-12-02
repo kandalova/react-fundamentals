@@ -50,7 +50,7 @@ export function Courses() {
 					onSearch={({ search }: ISearchPayload) => setSearchValue(search)}
 				/>
 				{isAdmin && (
-					<Link to={'/courses/add'}>
+					<Link data-testid='add-course' to={'/courses/add'}>
 						<Button text={ADD_COURSE_BUTTON_TEXT} />
 					</Link>
 				)}
